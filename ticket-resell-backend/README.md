@@ -6,6 +6,8 @@ To execute the backend application, first clone the project and then, from withi
 mvn package && java -jar target\ticket-resell-backend-0.0.1-SNAPSHOT.jar
 ```
 
+If in an IDE, just run the `TicketResellBackendApplication` class.
+
 ## REST Resources and API Endpoints
 
 Currently available, there are the following resources with the following endpoints:
