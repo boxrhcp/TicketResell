@@ -77,6 +77,11 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.web3j</groupId>
+			<artifactId>core</artifactId>
+			<version>4.3.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -84,6 +89,14 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.web3j</groupId>
+				<artifactId>web3j-maven-plugin</artifactId>
+				<version>4.5.11</version>
+				<configuration>
+					<soliditySourceFiles/>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
