@@ -29,6 +29,6 @@ public class HomeController {
     @RequestMapping(value = "/homes/{id}", method = RequestMethod.GET)
     public Home getHomeById(@PathVariable Long id) {
         Optional<Home> home = homeRepository.findById(id);
-        return home.isPresent() ? home.get() : new Home();
+        return home.orElseGet(Home::new);
     }
 }
