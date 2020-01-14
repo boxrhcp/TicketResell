@@ -34,10 +34,15 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import {Organizer} from '@/components/Organizer';
 
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
+
+  mounted() {
+    Organizer.Retrieve().then(d => d.forEach(f => console.log(f.name)));
+  }
 }
 </script>
 
