@@ -1,8 +1,11 @@
 package eit.tub.ec.TicketResellBackend.Ticket;
 
+import eit.tub.ec.TicketResellBackend.Utils.APIError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 public class TicketController {
@@ -19,14 +22,26 @@ public class TicketController {
     }
 
     @RequestMapping(value = "/tickets/{id}", method = RequestMethod.PATCH)
-    public ResponseEntity<?> updateTicketOnSale(@PathVariable Long id, @RequestBody Ticket ticket) {
+    public ResponseEntity<?> updateTicketOnSale(@PathVariable Long id, @RequestBody Ticket ticketUpdate) {
 
-        if (ticket.getId() == null || !id.equals(ticket.getId())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        if (ticketUpdate.getId() == null || !id.equals(ticketUpdate.getId())) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new APIError(HttpStatus.BAD_REQUEST, "The field ticketId can't be null and has to equal the ID in the URL path."));
         }
 
-        Ticket updatedTicket = ticketRepository.save(ticket);
+        Optional<Ticket> ticketOptional = ticketRepository.findById(ticketUpdate.getId());
+        Ticket ticket = ticketOptional.orElse(null);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(updatedTicket);
+        if (ticket == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new APIError(HttpStatus.NOT_FOUND, "No ticket was found with the ticketId provided."));
+        }
+
+        ticket.setOnSale(ticketUpdate.isOnSale());
+        ticket = ticketRepository.save(ticket);
+
+        return ResponseEntity.status(HttpStatus.OK).body(ticket);
     }
 }
