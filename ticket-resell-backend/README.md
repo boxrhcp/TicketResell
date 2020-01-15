@@ -26,3 +26,8 @@ Some of the guides used for setting up the basics are:
 4. To return data in JSON format: [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
 5. To set up the MySQL Database, connect, and interact with it: [Accessing data with MySQL](https://spring.io/guides/gs/accessing-data-mysql/)
 
+## Ethereum
+### Contracts
+Requires to install solidity locally (solc).
+Add contracts under /java/main/resrouces
+Run mvn clean package and the contract wrapper for java will be created under target/generated-sources to use it. 
