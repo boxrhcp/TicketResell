@@ -1,18 +1,24 @@
 <template>
   <div class="container home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div v-if="this.$store.state.isLoggedIn !== true">
+      <OrganizersTable />
+    </div>
+    <div v-else>
+      <EventCreateForm />
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import OrganizersTable from "@/components/OrganizersTable.vue";
+import EventCreateForm from "@/components/EventCreateForm.vue";
 
 export default {
-  name: 'home',
+  name: "home",
   components: {
-    HelloWorld
+    OrganizersTable,
+    EventCreateForm
   }
-}
+};
 </script>
