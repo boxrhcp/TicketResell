@@ -29,5 +29,8 @@ Some of the guides used for setting up the basics are:
 ## Ethereum
 ### Contracts
 Requires to install solidity locally (solc).
-Add contracts under /java/main/resrouces
-Run mvn clean package and the contract wrapper for java will be created under target/generated-sources to use it. 
+Add contracts under /java/main/resources and run `mvn clean package`
+### Test 
+To test you will need [Ganache](https://www.trufflesuite.com/ganache) 
+After installing create a new workspace and make sure to edit your RPC server URL in resources/application.properties for ethereum.connection.url
+Also make sure to create accounts which should be unlocked. Once ganache is running you can see the list of accounts and you can also get their private keys to test

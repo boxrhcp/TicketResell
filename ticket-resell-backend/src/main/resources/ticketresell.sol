@@ -10,8 +10,8 @@ contract TicketResell {
 
     mapping (string => TicketMapping) tickets;
 
-    function createTicket(address owner, string memory ticket, uint price) public{
-        tickets[ticket] = TicketMapping(block.timestamp, owner, price);
+    function createTicket(string memory ticket, uint price) public{
+        tickets[ticket] = TicketMapping(block.timestamp, msg.sender, price);
     }
 
     function getTicketInfo(string calldata ticket) external view returns (uint timestamp, address owner, uint price){
