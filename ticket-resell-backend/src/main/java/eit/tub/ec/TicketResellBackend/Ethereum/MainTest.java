@@ -4,8 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Future;
+
 import eit.tub.ec.TicketResellBackend.Ethereum.Contracts.TicketResell;
 import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
+import org.web3j.abi.FunctionEncoder;
+import org.web3j.abi.FunctionReturnDecoder;
+import org.web3j.abi.TypeReference;
+import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.Type;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.WalletUtils;
@@ -15,6 +24,7 @@ import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.RemoteFunctionCall;
 import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -55,7 +65,7 @@ public class MainTest {
             // Decrypt and open the wallet into a Credential object
             Credentials credentials = Credentials.create(pk);
             // Get the account address
-            PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(web3j,5000l,5);
+            PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(web3j, 5000l, 5);
             //deploy new contract
             TransactionManager txManager = new FastRawTransactionManager(web3j, credentials, processor);
 
@@ -92,14 +102,15 @@ public class MainTest {
             System.out.println(token.getTransactionReceipt());
 
             // create transaction transfer token to receiver
-            BigInteger value = new BigInteger("30");
+            BigDecimal value = new BigDecimal("30");
+            BigDecimal price = Convert.toWei(value, Convert.Unit.ETHER);
             TransactionReceipt receipt = token.createTicket(
-                    "test", value).send();
+                    "test", price.toBigInteger()).send();
             // get transaction result
             System.out.println(receipt.getTransactionHash());
-            receipt = token.getTicketInfo("test").send();
-            System.out.println(receipt.getTransactionHash());
-            //loadTest(contract, pk);
+            Tuple3 <BigInteger, String, BigInteger>result = token.getTicketInfo("test").send();
+            System.out.println(result.toString());
+            //loadTest(contract, "02dc3c7369f16bb2bd1de6ef95ae3431e08cbb9d106a9eda7667d4da5218c95f");
         } catch (IOException ex) {
             throw new RuntimeException("Error whilst sending json-rpc requests", ex);
         } catch (Exception e) {
@@ -107,7 +118,7 @@ public class MainTest {
         }
     }
 
-    public static void loadTest(String contract, String userPK){
+    public static void loadTest(String contract, String userPK) throws Exception {
         Web3j web3j = Web3j.build(new HttpService("http://localhost:8545"));
         PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(web3j,5000l
                 ,5);
@@ -139,7 +150,15 @@ public class MainTest {
                         }
                     }
                 });
-        //TransactionReceipt receipt = token.getTicketInfo("test").send();
-        //System.out.println(receipt.setStatus());
+        org.web3j.protocol.core.methods.request.Transaction transaction = org.web3j.protocol.core.methods.request.Transaction.createFunctionCallTransaction(
+                "0xddB2F74a52bDE5B4eb7a3d1C77c5b832F123BE07",  new BigInteger("55"), new BigInteger("2000000000"), new BigInteger("4300000"), contract,
+                token.getTicketInfo("test").encodeFunctionCall());
+
+        org.web3j.protocol.core.methods.response.EthSendTransaction transactionResponse =
+                web3j.ethSendTransaction(transaction).send();
+
+        System.out.println(transactionResponse.getJsonrpc());
+
     }
 }
+
