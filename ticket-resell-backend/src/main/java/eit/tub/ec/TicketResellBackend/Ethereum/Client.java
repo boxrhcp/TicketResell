@@ -77,6 +77,7 @@ public class Client {
      * This method executes the payment of the user calling it to buy the specified ticket.
      *
      * @param ticket ticket that user wants to buy
+     * @param price price that user wants to pay
      * @return call success
      * @throws Exception
      */
