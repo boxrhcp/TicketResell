@@ -4,6 +4,7 @@
       <OrganizersTable />
     </div>
     <div v-else>
+      <EventCreateForm />
     </div>
   </div>
 </template>
@@ -11,11 +12,13 @@
 <script>
 // @ is an alias to /src
 import OrganizersTable from "@/components/OrganizersTable.vue";
+import EventCreateForm from "@/components/EventCreateForm.vue";
 
 export default {
   name: "home",
   components: {
-    OrganizersTable
+    OrganizersTable,
+    EventCreateForm
   }
 };
 </script>
