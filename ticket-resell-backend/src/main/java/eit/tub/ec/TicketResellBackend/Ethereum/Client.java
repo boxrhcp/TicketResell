@@ -19,7 +19,7 @@ public class Client {
     /**
      *
      * @param contract the contract address that must have been deployed
-     * @param userPK the address of the user that has to execute a transaction
+     * @param userPK the primary key of the user that has to execute a transaction
      * @param url the url of the ethereum RPC server
      */
     public Client(String contract, String userPK, String url){
