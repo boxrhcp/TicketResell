@@ -9,8 +9,11 @@
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/about">About</router-link>
-          </li>
+          </li>          
         </ul>
+        <div class="my-2 my-lg-0">
+            <router-link class="nav-link" to="/">{{ this.$store.state.loggedOrganizer.name }}</router-link>
+          </div>
       </div>
     </nav>
     <router-view />

@@ -22,4 +22,18 @@ export class Organizer {
             });
         });        
     }
+
+    public static RetrieveById(id : Number) : Promise<Organizer> {
+        return new Promise(function(resolve, reject) {
+            axios.get(process.env.VUE_APP_SERVER_URL + '/Organizers/' + id).then(result => {
+                if(result.status === 200) {
+                    let organizer: Organizer = Object.assign(new Organizer(), result.data);
+                    resolve(organizer);
+                }
+                else {
+                    reject(Error(result.statusText));
+                }
+            });
+        });        
+    }
 }
