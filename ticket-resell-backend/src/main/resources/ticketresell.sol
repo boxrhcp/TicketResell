@@ -4,7 +4,7 @@ contract TicketResell {
     
     struct TicketMapping{
         uint timestamp;
-        address owner;
+        address payable owner;
         uint price;
     }
 
@@ -20,6 +20,7 @@ contract TicketResell {
 
     function buyTicket(string memory ticket) payable public{
         require(msg.value == tickets[ticket].price);
+        tickets[ticket].owner.transfer(msg.value);
         tickets[ticket].owner = msg.sender;
         tickets[ticket].timestamp = block.timestamp;
     }
