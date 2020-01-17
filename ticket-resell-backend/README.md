@@ -13,7 +13,13 @@ If in an IDE, just run the `TicketResellBackendApplication` class.
 Currently available, there are the following resources with the following endpoints:
 * Home
     * `GET /`
-    * `GET /home`
+    * `GET /homes`
+    * `GET /homes/{id}`
+* Tickets
+    * `GET /tickets`
+    * `PATCH /ticket/{id}`
+* Transactions
+    * `POST /transactions`
 
 ## Spring Documentation
 
