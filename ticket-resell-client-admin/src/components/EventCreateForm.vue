@@ -1,6 +1,8 @@
 <template>
   <div class="event-create-form">
     <form>
+      <legend>Create a new Event</legend>
+      <br />
       <fieldset>
         <div class="form-group">
           <label for="eventName">Event Name</label>
