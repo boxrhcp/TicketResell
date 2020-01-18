@@ -46,4 +46,18 @@ export class Concert {
         });        
     }
 
+    public static RetrieveById(id : Number) : Promise<Concert> {
+        return new Promise(function(resolve, reject) {
+            axios.get(process.env.VUE_APP_SERVER_URL + '/Events/' + id).then(result => {
+                if(result.status === 200) {
+                    let event: Concert = Object.assign(new Concert(), result.data);
+                    resolve(event);
+                }
+                else {
+                    reject(Error(result.statusText));
+                }
+            });
+        });        
+    }
+
 }
