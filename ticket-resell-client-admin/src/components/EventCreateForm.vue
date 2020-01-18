@@ -73,7 +73,25 @@ export default class OrganizersTable extends Vue {
   }
 
   private createEvent(): void {
-    // call post api to store the newly created event
+    
+    Concert.Save(this.newEvent).then(result => {
+      if(result.success) {
+        alert('Saved the event : ' + this.newEvent.name);
+        this.resetForm();
+      }
+      else {
+        alert('Could not save the event :(');
+        console.log(result.message);
+      }
+    });
+    
+  }
+
+  private resetForm() : void {
+    this.newEvent.name = '';
+    this.newEvent.venue = '';
+    this.newEvent.maxTickets = 0;
+    this.newEvent.price = 0;
   }
 }
 </script>
