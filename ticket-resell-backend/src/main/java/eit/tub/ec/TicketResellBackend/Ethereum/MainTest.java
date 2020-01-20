@@ -99,7 +99,7 @@ public class MainTest {
             // load existing contract by address
             String contract = token.getContractAddress();
             System.out.println(contract);
-            System.out.println(token.getTransactionReceipt());
+            /*System.out.println(token.getTransactionReceipt());
 
             // create transaction transfer token to receiver
             BigDecimal value = new BigDecimal("30");
@@ -110,7 +110,7 @@ public class MainTest {
             System.out.println(receipt.getTransactionHash());
             Tuple3 <BigInteger, String, BigInteger>result = token.getTicketInfo("test").send();
             System.out.println(result.toString());
-            //loadTest(contract, "02dc3c7369f16bb2bd1de6ef95ae3431e08cbb9d106a9eda7667d4da5218c95f");
+            //loadTest(contract, "02dc3c7369f16bb2bd1de6ef95ae3431e08cbb9d106a9eda7667d4da5218c95f");*/
         } catch (IOException ex) {
             throw new RuntimeException("Error whilst sending json-rpc requests", ex);
         } catch (Exception e) {
