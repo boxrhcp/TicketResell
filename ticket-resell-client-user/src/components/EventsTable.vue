@@ -1,0 +1,64 @@
+<template>
+  <div class="events-table">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Event ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Venue</th>
+          <th scope="col">Date</th>
+          <th scope="col">Available Tickets</th>
+          <th scope="col">Ticket Price</th>
+          <th scope="col">Buy</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="concert in concerts" v-bind:key="concert.id">
+          <th scope="row">{{ concert.id }}</th>
+          <td>{{ concert.name }}</td>
+          <td>{{ concert.venue }}</td>
+          <td>{{ concert.datetime | toLocaleDateString }} {{ concert.datetime | toLocaleTimeString }}</td>
+          <td>{{ concert.availableTickets }}</td>
+          <td>{{ concert.price }}</td>
+          <td><button type="button" class="btn btn-success">Buy</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import store from "../store";
+import moment from "moment";
+import { Concert } from "../models/Concert";
+
+@Component({
+  name: "EventTable",
+  filters: {
+    toLocaleDateString(timeStamp: string) {
+      return moment(timeStamp).format("MMMM Do YYYY");
+    },
+    toLocaleTimeString(timeStamp: string) {
+      return moment(timeStamp).format("LT");
+    }
+  }
+})
+export default class EventTable extends Vue {
+  private concerts: Concert[] = [];
+  private selectedEvent: Concert = new Concert();
+
+  mounted() {
+    Concert.Retrieve().then(e => {
+        this.concerts = e.filter(c => c.availableTickets > 0);
+    });
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+.events-table {
+  margin-top: 75px;
+}
+</style>

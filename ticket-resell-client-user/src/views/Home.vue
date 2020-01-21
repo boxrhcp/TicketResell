@@ -4,21 +4,25 @@
       <UsersTable />
     </div>
     <div v-else class="container-fluid">
-      <HelloWorld />
+      <div class="row">
+        <div class="col">
+          <EventTable />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
 import UsersTable from '@/components/UsersTable.vue';
+import EventTable from "@/components/EventsTable.vue";
 
 export default {
   name: 'home',
   components: {
-    HelloWorld,
-    UsersTable
+    UsersTable,
+    EventTable
   }
 }
 </script>
