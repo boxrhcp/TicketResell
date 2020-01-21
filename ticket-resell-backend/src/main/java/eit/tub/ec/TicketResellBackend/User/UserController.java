@@ -1,7 +1,5 @@
 package eit.tub.ec.TicketResellBackend.User;
 
-import eit.tub.ec.TicketResellBackend.User.User;
-import eit.tub.ec.TicketResellBackend.User.UserRepository;
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,34 +10,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
-
 @RestController
 public class UserController {
     private UserRepository userRepository;
 
-    public UserController(UserRepository userRepository) { this.userRepository = userRepository; }
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-    @RequestMapping(
-            value = {"/User"},
-            method = {RequestMethod.GET})
-    public ResponseEntity<?> getEvents() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.userRepository.findAll()); }
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public ResponseEntity<?> getUsers() {
+        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
+    }
 
-        @RequestMapping(
-                value = {"/User/{id}"},
-                method = {RequestMethod.GET}
-        )
-        public ResponseEntity<?> getEventsById(@PathVariable Long id) {
-            Optional<User> userOptional = this.userRepository.findById(id);
-            User user = userOptional.orElse(null);
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        Optional<User> user = userRepository.findById(id);
 
-            if (user == null) {
-                return ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body(new APIError(HttpStatus.NOT_FOUND, "No user was found with the eventId provided."));
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(user);
+        if (user.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(user.get());
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new APIError(HttpStatus.NOT_FOUND, "No user was found with the path ID provided."));
         }
     }
+}
 
 
