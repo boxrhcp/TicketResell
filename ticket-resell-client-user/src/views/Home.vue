@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div v-if="this.$store.state.isLoggedIn !== true" class="container">
-      <HelloWorld />
+      <UsersTable />
     </div>
     <div v-else class="container-fluid">
       <HelloWorld />
@@ -11,12 +11,14 @@
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import HelloWorld from '@/components/HelloWorld.vue';
+import UsersTable from '@/components/UsersTable.vue';
 
 export default {
   name: 'home',
   components: {
-    HelloWorld
+    HelloWorld,
+    UsersTable
   }
 }
 </script>

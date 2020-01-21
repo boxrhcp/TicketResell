@@ -1,16 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { User } from '@/models/User';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    loggedUser : new Number(),
+    loggedUser : new User(),
     isLoggedIn : false
   },
   mutations: {
     setLoggedUserAction(state, payload) {
-      state.loggedUser = 1;
+      User.RetrieveById(Number(payload)).then(u => state.loggedUser = u);
       state.isLoggedIn = true;
     }
   },
