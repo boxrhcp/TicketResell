@@ -1,7 +1,6 @@
 package eit.tub.ec.TicketResellBackend.Transaction;
 
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,8 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TransactionController {
 
-    @Autowired
     TransactionService transactionService;
+
+    public TransactionController(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
     @RequestMapping(value = "/transactions", method = RequestMethod.POST)
     public ResponseEntity<?> postTransaction(@RequestBody Transaction transaction) {
