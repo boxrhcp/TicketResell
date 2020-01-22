@@ -1,6 +1,5 @@
 package eit.tub.ec.TicketResellBackend.Ethereum;
 
-import eit.tub.ec.TicketResellBackend.Ethereum.Contracts.TicketResell;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
@@ -13,7 +12,7 @@ import org.web3j.tx.response.PollingTransactionReceiptProcessor;
 import java.math.BigInteger;
 
 public class ContractDeploy {
-
+    /*
     public static String deploy(String userPK, String url) throws Exception {
         Web3j web3j = Web3j.build(new HttpService(url));
         Credentials credentials = Credentials.create(userPK);
@@ -52,5 +51,7 @@ public class ContractDeploy {
         // load existing contract by address
         return token.getContractAddress();
     }
+
+     */
 
 }

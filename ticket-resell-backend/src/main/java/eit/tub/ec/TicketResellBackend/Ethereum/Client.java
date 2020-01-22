@@ -1,6 +1,5 @@
 package eit.tub.ec.TicketResellBackend.Ethereum;
 
-import eit.tub.ec.TicketResellBackend.Ethereum.Contracts.TicketResell;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -17,13 +16,13 @@ import java.math.BigInteger;
 
 public class Client {
 
-    private TicketResell token;
+    /* private TicketResell token;
 
     /**
      * @param contract the contract address that must have been deployed
      * @param userPK   the primary key of the user that has to execute a transaction
      * @param url      the url of the ethereum RPC server
-     */
+
     public Client(String contract, String userPK, String url) {
         Web3j web3j = Web3j.build(new HttpService(url));
         PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(web3j, 5000l
@@ -65,7 +64,7 @@ public class Client {
      * @param price  the price of the ticket
      * @return call success
      * @throws Exception
-     */
+
     public boolean createTicket(String ticket, int price) throws Exception {
         BigDecimal value = new BigDecimal(price);
         BigDecimal currency = Convert.toWei(value, Convert.Unit.ETHER);
@@ -80,7 +79,7 @@ public class Client {
      * @param price price that user wants to pay
      * @return call success
      * @throws Exception
-     */
+
     public boolean buyTicket(String ticket, int price) throws Exception {
         BigDecimal value = Convert.toWei(new BigDecimal(price), Convert.Unit.ETHER);
         TransactionReceipt receipt = token.buyTicket(ticket, value.toBigInteger()).send();
@@ -93,9 +92,9 @@ public class Client {
      * @param ticket ticket the user wants to know about
      * @return returns the ticket information
      * @throws Exception
-     */
+
     public String getTicketInfo(String ticket) throws Exception {
         Tuple3<BigInteger, String, BigInteger> receipt = token.getTicketInfo(ticket).send();
         return receipt.component1() + ":" + receipt.component2() + ":" + receipt.component3();
-    }
+    }*/
 }
