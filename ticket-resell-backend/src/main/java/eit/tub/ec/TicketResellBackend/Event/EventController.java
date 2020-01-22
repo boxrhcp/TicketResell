@@ -3,10 +3,7 @@ package eit.tub.ec.TicketResellBackend.Event;
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -34,5 +31,23 @@ public class EventController {
                     .status(HttpStatus.NOT_FOUND)
                     .body(new APIError(HttpStatus.NOT_FOUND, "No event was found with the path ID provided."));
         }
+    }
+
+    @RequestMapping(value = "/events", method = RequestMethod.POST)
+    public ResponseEntity<?> postEvent(@RequestBody Event event) {
+
+        if (event.getName() == null
+                || event.getPlace() == null
+                || event.getPrice() == null
+                || event.getNTickets() == null
+                || event.getOrganizerID() == null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new APIError(HttpStatus.BAD_REQUEST, " The fields name, place, price, nTickets, or organizerId can't be null"));
+        }
+
+        Event savedEvent = eventRepository.save(event);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedEvent);
     }
 }
