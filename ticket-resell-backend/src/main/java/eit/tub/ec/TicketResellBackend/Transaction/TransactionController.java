@@ -1,5 +1,6 @@
 package eit.tub.ec.TicketResellBackend.Transaction;
 
+import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotFoundException;
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,17 @@ public class TransactionController {
                     .body(new APIError(HttpStatus.BAD_REQUEST, " The fields ticketId or sellerId, or buyerId can't be null"));
         }
 
-        Transaction processedTransaction = transactionService.processTransaction(transaction);
+        Transaction processedTransaction;
+        ResponseEntity<?> response;
+        try {
+            processedTransaction = transactionService.processTransaction(transaction);
+            response = ResponseEntity.status(HttpStatus.CREATED).body(processedTransaction);
+        } catch (TicketNotFoundException e) {
+            response = ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new APIError(HttpStatus.BAD_REQUEST, "No ticket was found with the given ID."));
+        }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(processedTransaction);
+        return response;
     }
 }

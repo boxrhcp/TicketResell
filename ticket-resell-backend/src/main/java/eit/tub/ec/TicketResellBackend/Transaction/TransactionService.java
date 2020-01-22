@@ -4,7 +4,8 @@ import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotFoundException;
 import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
 import eit.tub.ec.TicketResellBackend.Ticket.TicketRepository;
 import eit.tub.ec.TicketResellBackend.Transaction.Exception.BlockchainTransactionErrorException;
-import org.springframework.beans.factory.annotation.Autowired;
+import eit.tub.ec.TicketResellBackend.User.User;
+import eit.tub.ec.TicketResellBackend.User.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -12,12 +13,18 @@ import java.util.Optional;
 
 @Service
 public class TransactionService {
+    private TransactionRepository transactionRepository;
+    private TicketRepository ticketRepository;
+    private UserRepository userRepository;
 
-    @Autowired
-    TransactionRepository transactionRepository;
-
-    @Autowired
-    TicketRepository ticketRepository;
+    public TransactionService(
+            TransactionRepository transactionRepository,
+            TicketRepository ticketRepository,
+            UserRepository userRepository) {
+        this.transactionRepository = transactionRepository;
+        this.ticketRepository = ticketRepository;
+        this.userRepository = userRepository;
+    }
 
     public Transaction processTransaction(Transaction transaction)
             throws
@@ -32,9 +39,9 @@ public class TransactionService {
         Float price = ticket.getPrice();
 
 
-        // TODO check that these fields exist if not, return 401 Bad Request
-//        Optional<User> seller = userRepository.findById(transaction.getSellerId());
-//        Optional<User> buyer = userRepository.findById(transaction.getBuyerId());
+        // TODO check that these fields exist if not, return 400 Bad Request
+        Optional<User> seller = userRepository.findById(transaction.getSellerId());
+        Optional<User> buyer = userRepository.findById(transaction.getBuyerId());
         String sellerWallet = "hardcodedWalletId1"; // seller.getWalletId();
         String buyerWallet = "hardcodedWalletId2"; // buyer.getWalletId();
 
