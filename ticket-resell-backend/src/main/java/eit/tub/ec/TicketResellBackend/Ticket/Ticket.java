@@ -14,7 +14,7 @@ public class Ticket {
     private Long eventId;
     private Long ownerId;
     private Float price;
-    private boolean onSale = false;
+    private boolean onSale = true;
 
     public Ticket() {}
 

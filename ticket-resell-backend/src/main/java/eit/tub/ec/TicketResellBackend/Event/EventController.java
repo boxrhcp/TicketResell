@@ -10,9 +10,11 @@ import java.util.Optional;
 @RestController
 public class EventController {
     private EventRepository eventRepository;
+    private EventService eventService;
 
-    public EventController(EventRepository eventRepository) {
+    public EventController(EventRepository eventRepository, EventService eventService) {
         this.eventRepository = eventRepository;
+        this.eventService = eventService;
     }
 
     @RequestMapping(value = {"/events"}, method = {RequestMethod.GET})
@@ -37,17 +39,18 @@ public class EventController {
     public ResponseEntity<?> postEvent(@RequestBody Event event) {
 
         if (event.getName() == null
+                || event.getDate() == null
                 || event.getPlace() == null
                 || event.getPrice() == null
                 || event.getNTickets() == null
                 || event.getOrganizerId() == null) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(new APIError(HttpStatus.BAD_REQUEST, " The fields name, place, price, ntickets, or organizerId can't be null"));
+                    .body(new APIError(HttpStatus.BAD_REQUEST, " The fields name, date, place, price, ntickets, or organizerId can't be null"));
         }
 
-        Event savedEvent = eventRepository.save(event);
+        Event createdEvent = eventService.createEvent(event);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedEvent);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
     }
 }
