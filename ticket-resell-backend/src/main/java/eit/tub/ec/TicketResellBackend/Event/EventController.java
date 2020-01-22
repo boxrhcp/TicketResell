@@ -40,10 +40,10 @@ public class EventController {
                 || event.getPlace() == null
                 || event.getPrice() == null
                 || event.getNTickets() == null
-                || event.getOrganizerID() == null) {
+                || event.getOrganizerId() == null) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(new APIError(HttpStatus.BAD_REQUEST, " The fields name, place, price, nTickets, or organizerId can't be null"));
+                    .body(new APIError(HttpStatus.BAD_REQUEST, " The fields name, place, price, ntickets, or organizerId can't be null"));
         }
 
         Event savedEvent = eventRepository.save(event);

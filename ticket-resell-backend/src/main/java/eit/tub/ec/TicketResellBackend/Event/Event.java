@@ -17,8 +17,7 @@ public class Event {
     private String place;
     private Float price;
     private Long nTickets;
-    private Float amount;
-    private Long organizerID;
+    private Long organizerId;
 
     public Event() {}
 
@@ -70,19 +69,11 @@ public class Event {
         this.nTickets = nTickets;
     }
 
-    public Float getAmount() {
-        return amount;
+    public Long getOrganizerId() {
+        return organizerId;
     }
 
-    public void setAmount(Float amount) {
-        this.amount = amount;
-    }
-
-    public Long getOrganizerID() {
-        return organizerID;
-    }
-
-    public void setOrganizerID(Long organizerID) {
-        this.organizerID = organizerID;
+    public void setOrganizerId(Long organizerId) {
+        this.organizerId = organizerId;
     }
 }
