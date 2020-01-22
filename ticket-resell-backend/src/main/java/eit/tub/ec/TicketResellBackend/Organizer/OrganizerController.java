@@ -18,12 +18,12 @@ public class OrganizerController {
         this.organizerRepository = organizerRepository;
     }
 
-    @RequestMapping(value = {"/organizer"}, method = {RequestMethod.GET})
+    @RequestMapping(value = {"/organizers"}, method = {RequestMethod.GET})
     public ResponseEntity<?> getOrganizers() {
         return ResponseEntity.status(HttpStatus.OK).body(organizerRepository.findAll());
     }
 
-    @RequestMapping(value = {"/Organizer/{id}"}, method = {RequestMethod.GET})
+    @RequestMapping(value = {"/organizers/{id}"}, method = {RequestMethod.GET})
     public ResponseEntity<?> getOrganizerById(@PathVariable Long id) {
         Optional<Organizer> organizer = organizerRepository.findById(id);
 
