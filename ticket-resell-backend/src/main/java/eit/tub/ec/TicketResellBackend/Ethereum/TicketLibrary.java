@@ -69,27 +69,11 @@ public class TicketLibrary {
      * owner of the ticket
      *
      * @param uri uri with the ticket metadata
-     * @return BigInteger id of the ticket created
+     * @return if the transaction has been committed
      * @throws Exception if transaction call goes wrong
      */
-    public BigInteger createTicket(String uri) throws Exception {
-        TransactionReceipt receipt = conn.createTicket(uri).send();
-        if (!receipt.isStatusOK()) throw new Exception("Transaction did not return OK.");
-
-        // Check in the events the created ticket id
-        final EthFilter ethFilter = new EthFilter(DefaultBlockParameterName.LATEST, DefaultBlockParameterName.LATEST,
-                conn.getContractAddress()).addSingleTopic(EventEncoder.encode(Tickets.CREATE_EVENT))
-                .addOptionalTopics(account);
-        final ArrayList<BigInteger> results = new ArrayList<>();
-        conn.createEventFlowable(ethFilter)
-                .subscribe(event -> {
-                    final String owner = event.owner;
-                    if (owner.equals(account)) {
-                        results.add(event.tokenId);
-                    }
-                });
-
-        return results.get(0);
+    public boolean createTicket(String uri) throws Exception {
+        return conn.createTicket(uri).send().isStatusOK();
     }
 
     /**
@@ -114,6 +98,18 @@ public class TicketLibrary {
      */
     public String getOwner(BigInteger ticketId) throws Exception {
         return conn.ownerOf(ticketId).send();
+    }
+
+    /**
+     * Get an owner ticketId by index of tickets hold by the owner. Useful when creating tickets to get the
+     * newly created IDs
+     * @param owner the owner user we want to get the information from
+     * @param index the ticket index within the owner ticket list
+     * @return ticketId found
+     * @throws Exception if call goes wrong
+     */
+    public BigInteger getOwnerTicketByIndex(String owner, BigInteger index) throws Exception {
+        return conn.tokenOfOwnerByIndex(owner, index).send();
     }
 
 }
