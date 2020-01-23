@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TransactionController {
+    private TransactionService transactionService;
+    private TransactionRepository transactionRepository;
 
-    TransactionService transactionService;
-
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(TransactionService transactionService, TransactionRepository transactionRepository) {
         this.transactionService = transactionService;
+        this.transactionRepository = transactionRepository;
     }
 
     @RequestMapping(value = "/transactions", method = RequestMethod.POST)
@@ -31,5 +32,11 @@ public class TransactionController {
         Transaction processedTransaction = transactionService.processTransaction(transaction);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(processedTransaction);
+    }
+
+    @RequestMapping(value = "/transactions", method = RequestMethod.GET)
+    public ResponseEntity<?> getTransactions() {
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(transactionRepository.findAll());
     }
 }
