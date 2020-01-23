@@ -1,10 +1,9 @@
-pragma solidity >=0.5.0 <=0.6.1;
-
+pragma solidity ^0.5.0;
 import "openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
-contract OwnerContract is Ownable, Pausable {
+contract OwnerContract is Ownable, Pausable{
 
     ERC721 public tickets;
     uint256 public currentPrice;
@@ -55,7 +54,7 @@ contract OwnerContract is Ownable, Pausable {
     /**
     *  Destroys the contract and gives the money to the address specified
     **/
-    function destroyContract(address payable owner) public onlyOwner {
+    function destroyContract(address payable owner) public onlyOwner{
         require(owner != address(0) && owner != address(this));
         selfdestruct(owner);
     }
