@@ -12,8 +12,8 @@ public class User {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private String name;
-    private String surname;
-    private Long eth_account;
+    private String ethAccount;
+    private boolean organizer = false;
 
     public Long getId() {
         return id;
@@ -31,21 +31,19 @@ public class User {
         this.name = name;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getEthAccount() {
+        return ethAccount;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setEthAccount(String ethAccount) {
+        this.ethAccount = ethAccount;
     }
 
-    public Long getEth_account() {
-        return eth_account;
+    public boolean isOrganizer() {
+        return organizer;
     }
 
-    public void setEth_account(Long eth_account) {
-        this.eth_account = eth_account;
+    public void setOrganizer(boolean organizer) {
+        this.organizer = organizer;
     }
-
-
 }

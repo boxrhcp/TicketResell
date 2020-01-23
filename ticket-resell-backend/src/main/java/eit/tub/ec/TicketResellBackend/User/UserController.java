@@ -3,10 +3,7 @@ package eit.tub.ec.TicketResellBackend.User;
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -19,8 +16,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public ResponseEntity<?> getUsers() {
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
+    public ResponseEntity<?> getUsers(@RequestParam(required = false) Boolean organizer) {
+        Iterable<User> users;
+        if (organizer != null) {
+            users = userRepository.findByOrganizer(organizer);
+        } else {
+            users = userRepository.findAll();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
     @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
@@ -32,8 +35,22 @@ public class UserController {
         } else {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(new APIError(HttpStatus.NOT_FOUND, "No user was found with the path ID provided."));
+                    .body(new APIError(HttpStatus.NOT_FOUND, "No user was found with such ID provided."));
         }
+    }
+
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    public ResponseEntity<?> postUser(@RequestBody User user) {
+
+        if (user.getName() == null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new APIError(HttpStatus.BAD_REQUEST, "The field name can't be null"));
+        }
+
+        User savedUser = userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 }
 

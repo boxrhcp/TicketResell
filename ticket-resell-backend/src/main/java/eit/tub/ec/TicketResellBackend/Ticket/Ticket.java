@@ -12,8 +12,9 @@ public class Ticket {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private Long eventId;
+    private Long ownerId;
     private Float price;
-    private boolean onSale = false;
+    private boolean onSale = true;
 
     public Ticket() {}
 
@@ -31,6 +32,14 @@ public class Ticket {
 
     public void setEventId(Long eventId) {
         this.eventId = eventId;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Float getPrice() {

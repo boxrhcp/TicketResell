@@ -4,19 +4,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Entity
 public class Event {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private String localization;
-    private Long ntickets;
-    private Float amount;
-    private Long organizerID;
+    private LocalDateTime date;
+    private String place;
+    private Float price;
+    private Long nTickets;
+    private Long organizerId;
 
+    public Event() {}
 
     public Long getId() {
         return id;
@@ -33,24 +36,44 @@ public class Event {
     public void setName(String name) {
         this.name = name;
     }
-    
-    public String getLocalization() { return localization; }
 
-    public void setLocalization() { this.localization = localization;}
-
-    public Long getnTickets() { return ntickets; }
-
-    public void setNtickets() {this.ntickets = ntickets;}
-
-    public Float getAmount() {
-        return amount;
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public void setAmount(Float amount) {
-        this.amount = amount;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
-    public Long getOrganizerID(){return organizerID;}
+    public String getPlace() {
+        return place;
+    }
 
-    public void setOrganizerID(){this.organizerID = organizerID;}
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
+    public Long getNTickets() {
+        return nTickets;
+    }
+
+    public void setNTickets(Long nTickets) {
+        this.nTickets = nTickets;
+    }
+
+    public Long getOrganizerId() {
+        return organizerId;
+    }
+
+    public void setOrganizerId(Long organizerId) {
+        this.organizerId = organizerId;
+    }
 }

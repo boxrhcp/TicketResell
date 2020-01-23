@@ -13,9 +13,8 @@ public class Transaction {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private LocalDateTime date;
-    private Long sellerId;
-    private Long buyerId;
     private Long tickedId;
+    private Long buyerId;
     private Float amount;
 
     public Transaction() {}
@@ -34,14 +33,6 @@ public class Transaction {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
-    }
-
-    public Long getSellerId() {
-        return sellerId;
-    }
-
-    public void setSellerId(Long sellerId) {
-        this.sellerId = sellerId;
     }
 
     public Long getBuyerId() {
