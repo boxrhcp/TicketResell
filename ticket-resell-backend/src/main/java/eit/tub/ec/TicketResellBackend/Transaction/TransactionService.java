@@ -1,6 +1,7 @@
 package eit.tub.ec.TicketResellBackend.Transaction;
 
 import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotFoundException;
+import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotOnSaleException;
 import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
 import eit.tub.ec.TicketResellBackend.Ticket.TicketRepository;
 import eit.tub.ec.TicketResellBackend.Transaction.Exception.BlockchainTransactionErrorException;
@@ -36,15 +37,16 @@ public class TransactionService {
 
         Optional<Ticket> ticketOptional = ticketRepository.findById(transaction.getTickedId());
         Ticket ticket = ticketOptional.orElseThrow(() -> new TicketNotFoundException(transaction.getTickedId()));
-        Float price = ticket.getPrice();
 
-        Optional<User> sellerOptional = userRepository.findById(transaction.getSellerId());
-        User seller = sellerOptional.orElseThrow(() -> new UserNotFoundException(transaction.getSellerId()));
+        if (!ticket.isOnSale())
+            throw new TicketNotOnSaleException(ticket.getId());
+
+        Float price = ticket.getPrice();
 
         Optional<User> buyerOptional = userRepository.findById(transaction.getBuyerId());
         User buyer = buyerOptional.orElseThrow(() -> new UserNotFoundException(transaction.getBuyerId()));
 
-        if (!processPayment(ticket.getId(), seller.getEthAccount(), buyer.getEthAccount(), price)) {
+        if (!processPayment(ticket, buyer)) {
             throw new BlockchainTransactionErrorException();
         }
 
@@ -59,7 +61,7 @@ public class TransactionService {
         return transaction;
     }
 
-    private boolean processPayment(Long ticketId, String sellerWallet, String buyerWallet, Float price) {
+    private boolean processPayment(Ticket ticket, User buyer) {
         // TODO Implement Blockchain ticket reselling logic
         // TODO Call blockchain library etc.
         return true;

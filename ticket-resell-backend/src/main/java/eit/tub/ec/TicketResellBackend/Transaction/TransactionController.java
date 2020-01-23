@@ -23,12 +23,10 @@ public class TransactionController {
     @RequestMapping(value = "/transactions", method = RequestMethod.POST)
     public ResponseEntity<?> postTransaction(@RequestBody Transaction transaction) {
 
-        if (transaction.getTickedId() == null
-                || transaction.getSellerId() == null
-                || transaction.getBuyerId() == null) {
+        if (transaction.getTickedId() == null || transaction.getBuyerId() == null) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(new APIError(HttpStatus.BAD_REQUEST, " The fields ticketId or sellerId, or buyerId can't be null"));
+                    .body(new APIError(HttpStatus.BAD_REQUEST, " The fields ticketId or buyerId can't be null"));
         }
 
         Transaction processedTransaction;
