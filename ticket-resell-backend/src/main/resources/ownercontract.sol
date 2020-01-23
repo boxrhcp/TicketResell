@@ -1,10 +1,9 @@
-pragma solidity ^0.5.0;
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/ownership/Ownable.sol";
-import "@openzeppelin/contracts/lifecycle/Pausable.sol";
-import "@openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
+pragma solidity >=0.5.0 <=0.6.1;
+import "openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
-contract TicketResell is Ownable, Pausable, Destructible{
+contract OwnerContract is Ownable, Pausable{
 
     ERC721 public tickets;
     uint256 public currentPrice;

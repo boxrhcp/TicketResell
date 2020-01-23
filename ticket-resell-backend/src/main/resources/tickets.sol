@@ -1,7 +1,7 @@
-pragma solidity ^0.5.0;
+pragma solidity >=0.5.0 <=0.6.1;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721Full.sol";
-import "@openzeppelin/contracts/drafts/Counters.sol";
+import "openzeppelin-solidity/contracts/token/ERC721/ERC721Full.sol";
+import "openzeppelin-solidity/contracts/drafts/Counters.sol";
 
 contract Tickets is ERC721Full {
     using Counters for Counters.Counter;
