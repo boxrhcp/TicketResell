@@ -12,7 +12,7 @@ public class User {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private String name;
-    private Long eth_account;
+    private String ethAccount;
     private boolean organizer = false;
 
     public Long getId() {
@@ -31,12 +31,12 @@ public class User {
         this.name = name;
     }
 
-    public Long getEth_account() {
-        return eth_account;
+    public String getEthAccount() {
+        return ethAccount;
     }
 
-    public void setEth_account(Long eth_account) {
-        this.eth_account = eth_account;
+    public void setEthAccount(String ethAccount) {
+        this.ethAccount = ethAccount;
     }
 
     public boolean isOrganizer() {
