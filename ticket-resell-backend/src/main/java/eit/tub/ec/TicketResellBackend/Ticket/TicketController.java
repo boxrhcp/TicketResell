@@ -18,9 +18,14 @@ public class TicketController {
     @RequestMapping(value = "/tickets", method = RequestMethod.GET)
     public ResponseEntity<?> getTickets(
             @RequestParam(required = false) Long eventId,
-            @RequestParam(required = false) boolean onSale) {
+            @RequestParam(required = false) Boolean onSale) {
 
-        Iterable<Ticket> tickets = ticketRepository.findByEventIdAndOnSale(eventId, onSale);
+        Iterable<Ticket> tickets;
+        if (eventId != null && onSale != null) {
+            tickets = ticketRepository.findByEventIdAndOnSale(eventId, onSale);
+        } else {
+            tickets = ticketRepository.findAll();
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(tickets);
     }
