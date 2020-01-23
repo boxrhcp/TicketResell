@@ -1,12 +1,8 @@
 package eit.tub.ec.TicketResellBackend.Ethereum;
 
 import eit.tub.ec.TicketResellBackend.Contracts.Tickets;
-import org.web3j.abi.EventEncoder;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.request.EthFilter;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.TransactionManager;
@@ -14,7 +10,6 @@ import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.tx.response.PollingTransactionReceiptProcessor;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 
 public class TicketLibrary {
 
@@ -103,6 +98,7 @@ public class TicketLibrary {
     /**
      * Get an owner ticketId by index of tickets hold by the owner. Useful when creating tickets to get the
      * newly created IDs
+     *
      * @param owner the owner user we want to get the information from
      * @param index the ticket index within the owner ticket list
      * @return ticketId found
