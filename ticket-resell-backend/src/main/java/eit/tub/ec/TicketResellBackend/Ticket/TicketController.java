@@ -31,24 +31,20 @@ public class TicketController {
     }
 
     @RequestMapping(value = "/tickets/{id}", method = RequestMethod.PATCH)
-    public ResponseEntity<?> updateTicketOnSale(@PathVariable Long id, @RequestBody Ticket ticketUpdate) {
+    public ResponseEntity<?> patchTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
 
-        if (ticketUpdate.getId() == null || !id.equals(ticketUpdate.getId())) {
+        if (ticket.getId() == null || !id.equals(ticket.getId())) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new APIError(HttpStatus.BAD_REQUEST, "The field ticketId can't be null and has to equal the ID in the URL path."));
         }
 
-        Optional<Ticket> ticketOptional = ticketRepository.findById(ticketUpdate.getId());
-        Ticket ticket = ticketOptional.orElse(null);
-
-        if (ticket == null) {
+        if (!ticketRepository.existsById(ticket.getId())) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(new APIError(HttpStatus.NOT_FOUND, "No ticket was found with the ticketId provided."));
         }
 
-        ticket.setOnSale(ticketUpdate.isOnSale());
         ticket = ticketRepository.save(ticket);
 
         return ResponseEntity.status(HttpStatus.OK).body(ticket);
