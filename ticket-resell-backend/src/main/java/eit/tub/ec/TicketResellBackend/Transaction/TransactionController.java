@@ -1,6 +1,7 @@
 package eit.tub.ec.TicketResellBackend.Transaction;
 
 import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotFoundException;
+import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotOnSaleException;
 import eit.tub.ec.TicketResellBackend.User.Exception.UserNotFoundException;
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class TransactionController {
         try {
             processedTransaction = transactionService.processTransaction(transaction);
             response = ResponseEntity.status(HttpStatus.CREATED).body(processedTransaction);
-        } catch (TicketNotFoundException | UserNotFoundException e) {
+        } catch (TicketNotFoundException | UserNotFoundException | TicketNotOnSaleException e) {
             response = ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new APIError(HttpStatus.BAD_REQUEST, e.getMessage()));
