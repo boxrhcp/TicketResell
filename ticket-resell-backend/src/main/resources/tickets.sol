@@ -27,4 +27,9 @@ contract Tickets is ERC721Full {
 
         return newTicketId;
     }
+
+    function getLastId() public view returns(uint256){
+        return _tokenIds.current();
+    }
+
 }

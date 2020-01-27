@@ -37,7 +37,7 @@ public class MainTest {
 
     public static void main(String[] args) {
         System.out.println("Connecting to Ethereum ...");
-        String url = "http://18.194.30.246:8545";
+        String url = "http://35.205.147.10:8501";
         System.out.println("Successfuly connected to Ethereum");
         String libraryAddress = "0x0d2139319b5473d7b5bcbd6eae5d92a982532ad8";
 
@@ -46,8 +46,8 @@ public class MainTest {
             //deployLibrary(url,pk);
             createTicket(url, pk);
             //System.out.println(ticketId);
-            String sellContract = PublishTicket.deploy(pk, url, libraryAddress, new BigInteger("30"));
-            System.out.println(sellContract);
+            //String sellContract = PublishTicket.deploy(pk, url, libraryAddress, new BigInteger("30"));
+            //System.out.println(sellContract);
 
         } catch (IOException ex) {
             throw new RuntimeException("Error whilst sending json-rpc requests", ex);

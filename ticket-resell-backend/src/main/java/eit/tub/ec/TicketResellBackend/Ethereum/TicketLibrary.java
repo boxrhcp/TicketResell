@@ -72,6 +72,16 @@ public class TicketLibrary {
     }
 
     /**
+     * Get the last ticket id of the blockchain
+     *
+     * @return the last id
+     * @throws Exception if transaction call goes wrong
+     */
+    public BigInteger getLastTicketId() throws Exception {
+        return conn.getLastId().send();
+    }
+
+    /**
      * This function will approve another address to transferOwnership of the ticket. This address in our case
      * will be the ownercontract address which will take care of the selling process.
      *
