@@ -16,8 +16,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public ResponseEntity<?> getUsers() {
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
+    public ResponseEntity<?> getUsers(@RequestParam(required = false) Boolean organizer) {
+        Iterable<User> users;
+        if (organizer != null) {
+            users = userRepository.findByOrganizer(organizer);
+        } else {
+            users = userRepository.findAll();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
     @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
@@ -29,7 +35,7 @@ public class UserController {
         } else {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(new APIError(HttpStatus.NOT_FOUND, "No user was found with the path ID provided."));
+                    .body(new APIError(HttpStatus.NOT_FOUND, "No user was found with such ID provided."));
         }
     }
 
@@ -39,7 +45,7 @@ public class UserController {
         if (user.getName() == null) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(new APIError(HttpStatus.BAD_REQUEST, " The field name can't be null"));
+                    .body(new APIError(HttpStatus.BAD_REQUEST, "The field name can't be null"));
         }
 
         User savedUser = userRepository.save(user);

@@ -1,12 +1,15 @@
 package eit.tub.ec.TicketResellBackend.Transaction;
 
 import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotFoundException;
+import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotOnSaleException;
 import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
 import eit.tub.ec.TicketResellBackend.Ticket.TicketRepository;
 import eit.tub.ec.TicketResellBackend.Transaction.Exception.BlockchainTransactionErrorException;
+import eit.tub.ec.TicketResellBackend.User.Exception.UserNotFoundException;
 import eit.tub.ec.TicketResellBackend.User.User;
 import eit.tub.ec.TicketResellBackend.User.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -26,6 +29,7 @@ public class TransactionService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public Transaction processTransaction(Transaction transaction)
             throws
             BlockchainTransactionErrorException,
@@ -36,16 +40,16 @@ public class TransactionService {
 
         Optional<Ticket> ticketOptional = ticketRepository.findById(transaction.getTickedId());
         Ticket ticket = ticketOptional.orElseThrow(() -> new TicketNotFoundException(transaction.getTickedId()));
+
+        if (!ticket.isOnSale())
+            throw new TicketNotOnSaleException(ticket.getId());
+
         Float price = ticket.getPrice();
 
+        Optional<User> buyerOptional = userRepository.findById(transaction.getBuyerId());
+        User buyer = buyerOptional.orElseThrow(() -> new UserNotFoundException(transaction.getBuyerId()));
 
-        // TODO check that these fields exist if not, return 400 Bad Request
-        Optional<User> seller = userRepository.findById(transaction.getSellerId());
-        Optional<User> buyer = userRepository.findById(transaction.getBuyerId());
-        String sellerWallet = "hardcodedWalletId1"; // seller.getWalletId();
-        String buyerWallet = "hardcodedWalletId2"; // buyer.getWalletId();
-
-        if (!processPayment(ticket.getId(), sellerWallet, buyerWallet, price)) {
+        if (!processPayment(ticket, buyer)) {
             throw new BlockchainTransactionErrorException();
         }
 
@@ -53,10 +57,14 @@ public class TransactionService {
         transaction.setDate(LocalDateTime.now());
         transactionRepository.save(transaction);
 
+        ticket.setOwnerId(buyer.getId());
+        ticket.setOnSale(false);
+        ticketRepository.save(ticket);
+
         return transaction;
     }
 
-    private boolean processPayment(Long ticketId, String sellerWallet, String buyerWallet, Float price) {
+    private boolean processPayment(Ticket ticket, User buyer) {
         // TODO Implement Blockchain ticket reselling logic
         // TODO Call blockchain library etc.
         return true;
