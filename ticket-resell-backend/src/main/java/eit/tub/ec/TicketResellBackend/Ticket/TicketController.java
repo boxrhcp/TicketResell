@@ -1,6 +1,7 @@
 package eit.tub.ec.TicketResellBackend.Ticket;
 
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
+import eit.tub.ec.TicketResellBackend.Utils.APIPatch;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,19 +32,19 @@ public class TicketController {
     }
 
     @RequestMapping(value = "/tickets/{id}", method = RequestMethod.PATCH)
-    public ResponseEntity<?> patchTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
+    public ResponseEntity<?> patchTicket(@PathVariable Long id, @RequestBody Ticket ticketUpdate) {
+        Optional<Ticket> ticketOptional = ticketRepository.findById(id);
+        Ticket ticket = null;
 
-        if (ticket.getId() == null || !id.equals(ticket.getId())) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new APIError(HttpStatus.BAD_REQUEST, "The field ticketId can't be null and has to equal the ID in the URL path."));
-        }
-
-        if (!ticketRepository.existsById(ticket.getId())) {
+        if (!ticketOptional.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(new APIError(HttpStatus.NOT_FOUND, "No ticket was found with the ticketId provided."));
+                    .body(new APIError(HttpStatus.NOT_FOUND, "No ticket was found with the id provided."));
+        } else {
+            ticket = ticketOptional.get();
         }
+
+        APIPatch.merge(ticketUpdate, ticket);
 
         ticket = ticketRepository.save(ticket);
 
