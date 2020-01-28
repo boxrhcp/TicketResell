@@ -51,14 +51,17 @@ public class Ticket {
 
     public void setPrice(Float price) {
         this.price = price;
+        // TODO: if it's on sale, update the contract price in the blockchain
     }
 
     public boolean isOnSale() {
         return onSale;
     }
 
-    public void setOnSale(boolean onSale) {
+    public void setOnSale(boolean onSale, Float price) {
         this.onSale = onSale;
+        // TODO: if changing to true, deploy ownerContract in blockchain
+        // TODO: use the parameter price to set the price in the contract
     }
 
     public String getEthUri() {

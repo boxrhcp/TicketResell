@@ -36,7 +36,6 @@ public class TransactionService {
             TicketNotFoundException {
 
         // TODO Implement ticket reselling logic
-        // TODO after a transaction, the ticket should change to onSale=false
 
         Optional<Ticket> ticketOptional = ticketRepository.findById(transaction.getTickedId());
         Ticket ticket = ticketOptional.orElseThrow(() -> new TicketNotFoundException(transaction.getTickedId()));
@@ -58,7 +57,7 @@ public class TransactionService {
         transactionRepository.save(transaction);
 
         ticket.setOwnerId(buyer.getId());
-        ticket.setOnSale(false);
+        ticket.setOnSale(false, null);
         ticketRepository.save(ticket);
 
         return transaction;
