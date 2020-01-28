@@ -26,8 +26,8 @@ public class TicketLibrary {
      */
     public TicketLibrary(String ticketLibraryAddress, String url, String userPK) {
         Web3j web3j = Web3j.build(new HttpService(url));
-        PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(web3j, 5000l
-                , 5);
+        PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(
+                web3j, 5000L, 5);
         Credentials credentials = Credentials.create(userPK);
         account = credentials.getAddress();
         TransactionManager txManager = new FastRawTransactionManager(web3j, credentials, processor);
