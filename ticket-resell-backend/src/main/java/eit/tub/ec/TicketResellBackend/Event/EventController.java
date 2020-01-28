@@ -1,5 +1,8 @@
 package eit.tub.ec.TicketResellBackend.Event;
 
+import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketApprovalException;
+import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketCreationException;
+import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketPublishingException;
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,8 +52,19 @@ public class EventController {
                     .body(new APIError(HttpStatus.BAD_REQUEST, " The fields name, date, place, price, ntickets, or organizerId can't be null"));
         }
 
-        Event createdEvent = eventService.createEvent(event);
+        Event createdEvent;
+        ResponseEntity<?> response;
+        try {
+            createdEvent = eventService.createEvent(event);
+            response = ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
+        } catch (BlockchainTicketCreationException
+                | BlockchainTicketPublishingException
+                | BlockchainTicketApprovalException e) {
+            response = ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new APIError(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+        }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
+        return response;
     }
 }

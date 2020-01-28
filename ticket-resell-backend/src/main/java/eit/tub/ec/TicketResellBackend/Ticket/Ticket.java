@@ -15,6 +15,9 @@ public class Ticket {
     private Long ownerId;
     private Float price;
     private boolean onSale = true;
+    private String ethUri;
+    private Long ethId;
+    private Long sellContractId;
 
     public Ticket() {}
 
@@ -56,5 +59,29 @@ public class Ticket {
 
     public void setOnSale(boolean onSale) {
         this.onSale = onSale;
+    }
+
+    public String getEthUri() {
+        return ethUri;
+    }
+
+    public void setEthUri(String ethUri) {
+        this.ethUri = ethUri;
+    }
+
+    public Long getEthId() {
+        return ethId;
+    }
+
+    public void setEthId(Long ethId) {
+        this.ethId = ethId;
+    }
+
+    public Long getSellContractId() {
+        return sellContractId;
+    }
+
+    public void setSellContractId(Long sellContractId) {
+        this.sellContractId = sellContractId;
     }
 }

@@ -12,7 +12,6 @@ import java.util.Set;
  * Implementation copied from https://codippa.com/skip-null-properties-spring-beanutils/
  */
 
-@Component
 public class APIPatch {
 
     public static void merge(Object source, Object destination){

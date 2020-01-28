@@ -1,37 +1,17 @@
 package eit.tub.ec.TicketResellBackend.Ethereum;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Future;
-
-import eit.tub.ec.TicketResellBackend.Contracts.OwnerContract;
 import eit.tub.ec.TicketResellBackend.Contracts.Tickets;
-import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.FunctionReturnDecoder;
-import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.RemoteCall;
-import org.web3j.protocol.core.RemoteFunctionCall;
-import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.DefaultGasProvider;
-import org.web3j.tx.response.NoOpProcessor;
 import org.web3j.tx.response.PollingTransactionReceiptProcessor;
-import org.web3j.utils.Convert;
+
+import java.io.IOException;
+import java.math.BigInteger;
 
 public class MainTest {
 
