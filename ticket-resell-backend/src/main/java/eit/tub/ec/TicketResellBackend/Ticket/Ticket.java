@@ -14,7 +14,7 @@ public class Ticket {
     private Long eventId;
     private Long ownerId;
     private Float price;
-    private boolean onSale = true;
+    private Boolean onSale = true;
     private String ethUri;
     private Long ethId;
     private Long sellContractId;
@@ -51,17 +51,14 @@ public class Ticket {
 
     public void setPrice(Float price) {
         this.price = price;
-        // TODO: if it's on sale, update the contract price in the blockchain
     }
 
-    public boolean isOnSale() {
+    public Boolean isOnSale() {
         return onSale;
     }
 
-    public void setOnSale(boolean onSale, Float price) {
+    public void setOnSale(Boolean onSale, Float price) {
         this.onSale = onSale;
-        // TODO: if changing to true, deploy ownerContract in blockchain
-        // TODO: use the parameter price to set the price in the contract
     }
 
     public String getEthUri() {

@@ -10,9 +10,11 @@ import java.util.Optional;
 
 @RestController
 public class TicketController {
+    private TicketService ticketService;
     private TicketRepository ticketRepository;
 
-    public TicketController(TicketRepository ticketRepository) {
+    public TicketController(TicketService ticketService, TicketRepository ticketRepository) {
+        this.ticketService = ticketService;
         this.ticketRepository = ticketRepository;
     }
 
@@ -44,7 +46,7 @@ public class TicketController {
             ticket = ticketOptional.get();
         }
 
-        APIPatch.merge(ticketUpdate, ticket);
+        ticketService.update(ticketUpdate, ticket);
 
         ticket = ticketRepository.save(ticket);
 
