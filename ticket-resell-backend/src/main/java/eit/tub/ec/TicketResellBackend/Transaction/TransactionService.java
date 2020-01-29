@@ -1,5 +1,7 @@
 package eit.tub.ec.TicketResellBackend.Transaction;
 
+import eit.tub.ec.TicketResellBackend.Contract.ContractRepository;
+import eit.tub.ec.TicketResellBackend.Contract.ContractService;
 import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotFoundException;
 import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotOnSaleException;
 import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
@@ -19,14 +21,20 @@ public class TransactionService {
     private TransactionRepository transactionRepository;
     private TicketRepository ticketRepository;
     private UserRepository userRepository;
+    private ContractService contractService;
+    private ContractRepository contractRepository;
 
     public TransactionService(
             TransactionRepository transactionRepository,
             TicketRepository ticketRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            ContractService contractService,
+            ContractRepository contractRepository) {
         this.transactionRepository = transactionRepository;
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
+        this.contractService = contractService;
+        this.contractRepository = contractRepository;
     }
 
     @Transactional
@@ -34,8 +42,6 @@ public class TransactionService {
             throws
             BlockchainTransactionErrorException,
             TicketNotFoundException {
-
-        // TODO Implement ticket reselling logic
 
         Optional<Ticket> ticketOptional = ticketRepository.findById(transaction.getTickedId());
         Ticket ticket = ticketOptional.orElseThrow(() -> new TicketNotFoundException(transaction.getTickedId()));
@@ -48,8 +54,10 @@ public class TransactionService {
         Optional<User> buyerOptional = userRepository.findById(transaction.getBuyerId());
         User buyer = buyerOptional.orElseThrow(() -> new UserNotFoundException(transaction.getBuyerId()));
 
-        if (!processPayment(ticket, buyer)) {
-            throw new BlockchainTransactionErrorException();
+        try {
+            contractService.purchaseTicket(ticket, buyer);
+        } catch (Exception e) {
+            throw new BlockchainTransactionErrorException(e.getMessage());
         }
 
         transaction.setAmount(price);
@@ -61,11 +69,5 @@ public class TransactionService {
         ticketRepository.save(ticket);
 
         return transaction;
-    }
-
-    private boolean processPayment(Ticket ticket, User buyer) {
-        // TODO Implement Blockchain ticket reselling logic
-        // TODO Call blockchain library etc.
-        return true;
     }
 }

@@ -1,8 +1,8 @@
 package eit.tub.ec.TicketResellBackend.Event;
 
-import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketApprovalException;
-import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketCreationException;
-import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketPublishingException;
+import eit.tub.ec.TicketResellBackend.Contract.Exception.BlockchainTicketApprovalException;
+import eit.tub.ec.TicketResellBackend.Contract.Exception.BlockchainTicketCreationException;
+import eit.tub.ec.TicketResellBackend.Contract.Exception.BlockchainTicketPublishingException;
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

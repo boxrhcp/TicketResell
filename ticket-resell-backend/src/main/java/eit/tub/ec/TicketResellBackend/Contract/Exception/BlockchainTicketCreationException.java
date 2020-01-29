@@ -1,4 +1,4 @@
-package eit.tub.ec.TicketResellBackend.Ethereum.Exception;
+package eit.tub.ec.TicketResellBackend.Contract.Exception;
 
 public class BlockchainTicketCreationException extends RuntimeException {
 

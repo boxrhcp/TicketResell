@@ -1,12 +1,12 @@
 package eit.tub.ec.TicketResellBackend.Contract;
 
-import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainContractNotFoundException;
-import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketApprovalException;
-import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketCreationException;
-import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketPublishingException;
+import eit.tub.ec.TicketResellBackend.Contract.Exception.*;
+import eit.tub.ec.TicketResellBackend.Ethereum.OwnerContractManager;
 import eit.tub.ec.TicketResellBackend.Ethereum.PublishTicket;
 import eit.tub.ec.TicketResellBackend.Ethereum.TicketLibrary;
+import eit.tub.ec.TicketResellBackend.Ethereum.TicketPaymentManager;
 import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
+import eit.tub.ec.TicketResellBackend.Transaction.Exception.ContractNotFoundException;
 import eit.tub.ec.TicketResellBackend.User.Exception.UserNotFoundException;
 import eit.tub.ec.TicketResellBackend.User.User;
 import eit.tub.ec.TicketResellBackend.User.UserRepository;
@@ -108,5 +108,63 @@ public class ContractService {
             e.printStackTrace();
             throw new BlockchainTicketApprovalException(e.getMessage(), ticket.getId());
         }
+    }
+
+    @Transactional
+    public void purchaseTicket(Ticket ticket, User buyer) {
+        Optional<Contract> ownerContractOptional = contractRepository.findById(ticket.getSellContractId());
+        Contract ownerContract = ownerContractOptional.orElseThrow(
+                () -> new ContractNotFoundException(ticket.getSellContractId()));
+
+        Optional<User> userOptional = userRepository.findById(ticket.getOwnerId());
+        User owner = userOptional.orElseThrow(
+                () -> new UserNotFoundException(ticket.getOwnerId()));
+
+        if(!changeOwner(ownerContract, ticket, buyer) || !destroyContract(ownerContract, owner)) {
+            throw new BlockchainUnsuccessfulTicketPurchaseException(ticket.getId(), buyer.getId());
+        }
+
+        if(!destroyContract(ownerContract, owner)) {
+            throw new BlockchainUnsuccessfulOwnerContractDestructionException(ownerContract.getId(), owner.getId());
+        }
+    }
+
+    private boolean changeOwner(Contract ownerContract, Ticket ticket, User buyer) {
+        TicketPaymentManager ticketPaymentManager = new TicketPaymentManager(
+                ownerContract.getEthAddress(),
+                this.blockchainUrl,
+                buyer.getEthKey());
+
+        boolean success;
+        try {
+            success = ticketPaymentManager.buyTicket(
+                BigInteger.valueOf(ticket.getEthId()),
+                BigInteger.valueOf(ticket.getPrice().longValue()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BlockchainTicketPurchaseException(e.getMessage(), ticket.getId(), buyer.getId());
+        }
+
+        return success;
+    }
+
+    private boolean destroyContract(Contract ownerContract, User owner) {
+        OwnerContractManager ownerContractManager = new OwnerContractManager(
+                ownerContract.getEthAddress(),
+                this.blockchainUrl,
+                owner.getEthKey());
+
+        boolean success;
+        try {
+            success = ownerContractManager.destroyContract();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BlockchainTicketOwnerContractDestructionException(
+                    e.getMessage(),
+                    ownerContract.getId(),
+                    owner.getId());
+        }
+
+        return success;
     }
 }

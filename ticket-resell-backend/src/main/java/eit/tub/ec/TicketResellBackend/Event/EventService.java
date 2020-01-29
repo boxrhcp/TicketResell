@@ -1,7 +1,7 @@
 package eit.tub.ec.TicketResellBackend.Event;
 
 import eit.tub.ec.TicketResellBackend.Contract.ContractService;
-import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketCreationException;
+import eit.tub.ec.TicketResellBackend.Contract.Exception.BlockchainTicketCreationException;
 import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
 import eit.tub.ec.TicketResellBackend.Ticket.TicketRepository;
 import org.springframework.stereotype.Service;
