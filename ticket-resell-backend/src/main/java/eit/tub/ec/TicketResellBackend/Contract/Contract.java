@@ -1,4 +1,4 @@
-package eit.tub.ec.TicketResellBackend.Ethereum;
+package eit.tub.ec.TicketResellBackend.Contract;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

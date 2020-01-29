@@ -1,4 +1,4 @@
-package eit.tub.ec.TicketResellBackend.Ethereum;
+package eit.tub.ec.TicketResellBackend.Contract;
 
 public enum ContractType {
     TICKET_LIBRARY(1L, "ticket_library"),

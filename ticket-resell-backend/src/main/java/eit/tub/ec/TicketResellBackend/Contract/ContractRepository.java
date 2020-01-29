@@ -1,4 +1,4 @@
-package eit.tub.ec.TicketResellBackend.Ethereum;
+package eit.tub.ec.TicketResellBackend.Contract;
 
 import org.springframework.data.repository.CrudRepository;
 

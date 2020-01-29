@@ -1,9 +1,11 @@
-package eit.tub.ec.TicketResellBackend.Ethereum;
+package eit.tub.ec.TicketResellBackend.Contract;
 
 import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainContractNotFoundException;
 import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketApprovalException;
 import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketCreationException;
 import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketPublishingException;
+import eit.tub.ec.TicketResellBackend.Ethereum.PublishTicket;
+import eit.tub.ec.TicketResellBackend.Ethereum.TicketLibrary;
 import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
 import eit.tub.ec.TicketResellBackend.User.Exception.UserNotFoundException;
 import eit.tub.ec.TicketResellBackend.User.User;

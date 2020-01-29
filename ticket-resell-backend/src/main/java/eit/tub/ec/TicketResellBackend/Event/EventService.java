@@ -1,11 +1,9 @@
 package eit.tub.ec.TicketResellBackend.Event;
 
-import eit.tub.ec.TicketResellBackend.Ethereum.ContractRepository;
-import eit.tub.ec.TicketResellBackend.Ethereum.ContractService;
+import eit.tub.ec.TicketResellBackend.Contract.ContractService;
 import eit.tub.ec.TicketResellBackend.Ethereum.Exception.BlockchainTicketCreationException;
 import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
 import eit.tub.ec.TicketResellBackend.Ticket.TicketRepository;
-import eit.tub.ec.TicketResellBackend.User.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,20 +13,14 @@ public class EventService {
     private ContractService contractService;
     private EventRepository eventRepository;
     private TicketRepository ticketRepository;
-    private UserRepository userRepository;
-    private ContractRepository contractRepository;
 
     public EventService (
             ContractService contractService,
             EventRepository eventRepository,
-            TicketRepository ticketRepository,
-            UserRepository userRepository,
-            ContractRepository contractRepository) {
+            TicketRepository ticketRepository) {
         this.contractService = contractService;
         this.eventRepository = eventRepository;
         this.ticketRepository = ticketRepository;
-        this.userRepository = userRepository;
-        this.contractRepository = contractRepository;
     }
 
     @Transactional
