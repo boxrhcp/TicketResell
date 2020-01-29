@@ -22,19 +22,16 @@ public class TransactionService {
     private TicketRepository ticketRepository;
     private UserRepository userRepository;
     private ContractService contractService;
-    private ContractRepository contractRepository;
 
     public TransactionService(
             TransactionRepository transactionRepository,
             TicketRepository ticketRepository,
             UserRepository userRepository,
-            ContractService contractService,
-            ContractRepository contractRepository) {
+            ContractService contractService) {
         this.transactionRepository = transactionRepository;
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.contractService = contractService;
-        this.contractRepository = contractRepository;
     }
 
     @Transactional
