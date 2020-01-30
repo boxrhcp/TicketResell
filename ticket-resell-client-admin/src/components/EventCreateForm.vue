@@ -15,12 +15,18 @@
           />
         </div>
         <div class="form-group">
+          <label for="eventYear">Date and Time</label>
+          <div class="input-group">
+            <input type="datetime-local" aria-label="Date" class="form-control" v-model="newEvent.date" />
+          </div>
+        </div>
+        <div class="form-group">
           <label for="eventVenue">Venue</label>
           <input
             type="text"
             class="form-control"
             id="eventVenue"
-            v-model="newEvent.venue"
+            v-model="newEvent.place"
             placeholder="Berlin"
           />
         </div>
@@ -30,7 +36,7 @@
             type="number"
             class="form-control"
             id="eventTickets"
-            v-model="newEvent.maxTickets"
+            v-model="newEvent.ntickets"
             placeholder="1500"
           />
         </div>
@@ -65,6 +71,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { Concert } from "@/models/Concert";
 import store from "../store";
+import moment from "moment";
 
 @Component
 export default class OrganizersTable extends Vue {
@@ -75,24 +82,22 @@ export default class OrganizersTable extends Vue {
   }
 
   private createEvent(): void {
-    
     Concert.Save(this.newEvent).then(result => {
-      if(result.success) {
-        alert('Saved the event : ' + this.newEvent.name);
+      if (result.success) {
+        alert("Saved the event : " + this.newEvent.name);
         this.resetForm();
+      } else {
+        alert("Could not save the event :( \n" + result.message);
       }
-      else {
-        alert('Could not save the event :(');
-        console.log(result.message);
-      }
+    }).catch(result => {
+      alert("Could not save the event :( \n" + result.message);
     });
-    
   }
 
-  private resetForm() : void {
-    this.newEvent.name = '';
-    this.newEvent.venue = '';
-    this.newEvent.maxTickets = 0;
+  private resetForm(): void {
+    this.newEvent.name = "";
+    this.newEvent.place = "";
+    this.newEvent.ntickets = 0;
     this.newEvent.price = 0;
   }
 }
