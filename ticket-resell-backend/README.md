@@ -6,11 +6,36 @@ The backend of the application consists on a SpringBoot Application that exposes
 
 To execute the backend application, from within then backend project directory (`ticket-resell-backend`), run:
 
+To package the application run:
+
+```bash
+mvn package
+```
+
+Then, run it with:
+```bash
+java -jar target\ticket-resell-backend-0.0.1-SNAPSHOT.jar
+```
+
+Keep in mind that, to run the whole application successfully, a local deploy of [Ganache](https://www.trufflesuite.com/ganache)
+will be needed. Don't forget to create a couple of accounts. You will need at least 1 to run the whole applications and
+2 to make use of the application features.
+
+After deploying it, open the `DeployLibraryContract` class, in the `eit.tub.ec.TicketResellBackend.Ethereum` package, 
+and set the URL of the local blockchain deployment in  `BLOCKCHAIN_URL` and the private key of one of the accounts that 
+were created in the blockchain in `ADMIN_PK`. 
+Execute the class. 
+It will print in the console the address of the *ticket library* contract. 
+
+With this address, go to the configuration file `/src/main/resources/application.properties` and assign it to the 
+variable `ethereum.contract.ticket.library`.
+Assign to the variable `ethereum.connection.url` the URL of the blockchain that you assigned previously to the 
+`BLOCKCHAIN_URL` variable in the `DeployLibraryContract`.
+
+The application should be ready to run. Run the `TicketResellBackendApplication` class or use the previous command:
 ```bash
 mvn package && java -jar target\ticket-resell-backend-0.0.1-SNAPSHOT.jar
 ```
-
-If inside an IDE, just run the `TicketResellBackendApplication` class.
 
 ## API Endpoints
 
