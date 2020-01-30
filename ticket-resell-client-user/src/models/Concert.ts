@@ -1,23 +1,27 @@
 import axios from 'axios';
+import { Ticket } from './Ticket';
 
 export class Concert {
     id !: Number;
     name !: String;
-    venue !: String;
-    maxTickets !: Number;
-    availableTickets : Number = 100; // TODO : Update after API
+    date !: Date;
+    place !: String;
     price !: Number;
-    datetime : Number = Date.now();// TODO : Update after API
     organizerId !: Number;
+    ntickets !: Number; 
+    availableTickets !: Number;
 
     public static Retrieve() : Promise<Concert[]> {
         return new Promise(function(resolve, reject) {
-            axios.get(process.env.VUE_APP_SERVER_URL + '/Events').then(result => {
+            axios.get(process.env.VUE_APP_SERVER_URL + '/events').then(result => {
                 if(result.status === 200) {
                     let events : Concert[] = [];
                     result.data.forEach((element: any, index: Number) => {
                         let event: Concert = Object.assign(new Concert(), element);
-                        events.push(event);
+                        Ticket.RetrieveUnSold(event.id).then(t => {
+                            event.availableTickets = t.length;
+                            events.push(event);
+                        });
                     });
                     resolve(events);
                 }
@@ -30,7 +34,7 @@ export class Concert {
 
     public static RetrieveById(id : Number) : Promise<Concert> {
         return new Promise(function(resolve, reject) {
-            axios.get(process.env.VUE_APP_SERVER_URL + '/Events/' + id).then(result => {
+            axios.get(process.env.VUE_APP_SERVER_URL + '/events/' + id).then(result => {
                 if(result.status === 200) {
                     let event: Concert = Object.assign(new Concert(), result.data);
                     resolve(event);
