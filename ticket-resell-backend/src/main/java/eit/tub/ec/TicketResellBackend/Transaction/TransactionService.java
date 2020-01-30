@@ -56,7 +56,7 @@ public class TransactionService {
             throw new TransactionSameBuyerAndOwnerException();
         }
 
-        if (buyer.getEthAddress() == null) {
+        if (buyer.getEthAddress() == null || buyer.getEthKey() == null) {
             throw new UserWithoutEthWalletException(buyer.getId());
         }
 
