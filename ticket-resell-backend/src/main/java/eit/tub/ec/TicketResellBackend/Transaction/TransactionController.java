@@ -2,8 +2,9 @@ package eit.tub.ec.TicketResellBackend.Transaction;
 
 import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotFoundException;
 import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotOnSaleException;
-import eit.tub.ec.TicketResellBackend.Transaction.Exception.BlockchainTransactionErrorException;
+import eit.tub.ec.TicketResellBackend.Transaction.Exception.BlockchainTransactionException;
 import eit.tub.ec.TicketResellBackend.User.Exception.UserNotFoundException;
+import eit.tub.ec.TicketResellBackend.User.Exception.UserWithoutEthWalletException;
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +40,14 @@ public class TransactionController {
         } catch (TicketNotFoundException
                 | UserNotFoundException
                 | TicketNotOnSaleException
-                | BlockchainTransactionErrorException e) {
+                | UserWithoutEthWalletException e) {
             response = ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new APIError(HttpStatus.BAD_REQUEST, e.getMessage()));
+        } catch (BlockchainTransactionException e) {
+            response = ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new APIError(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
         }
 
         return response;
