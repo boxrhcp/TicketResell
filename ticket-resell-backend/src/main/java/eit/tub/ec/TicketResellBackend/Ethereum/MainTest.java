@@ -1,6 +1,6 @@
 package eit.tub.ec.TicketResellBackend.Ethereum;
 
-import eit.tub.ec.TicketResellBackend.Contracts.Tickets;
+import eit.tub.ec.TicketResellBackend.Ethereum.Contracts.Tickets;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
@@ -17,17 +17,20 @@ public class MainTest {
 
     public static void main(String[] args) {
         System.out.println("Connecting to Ethereum ...");
-        String url = "http://35.205.147.10:8501";
+//        String url = "http://35.205.147.10:8501";
+        String url = "http://127.0.0.1:8545";
         System.out.println("Successfuly connected to Ethereum");
         String libraryAddress = "0x0d2139319b5473d7b5bcbd6eae5d92a982532ad8";
 
         try {
-            String pk = "0xde59ac089c1221236b6441dd9c53d0514c9d6c38a0446b01cfb32dc4f62c4f8d"; // Add a private key here
-            //deployLibrary(url,pk);
-            createTicket(url, pk);
-            //System.out.println(ticketId);
-            //String sellContract = PublishTicket.deploy(pk, url, libraryAddress, new BigInteger("30"));
-            //System.out.println(sellContract);
+//            String pk = "0xde59ac089c1221236b6441dd9c53d0514c9d6c38a0446b01cfb32dc4f62c4f8d"; // Add a private key here
+            String pk = "1f0b2af9ab09c0213268e2c6e3fe6829c9c80ddbff450de2861b4519ef551f5d"; // Add a private key here
+
+            deployLibrary(url,pk);
+//            createTicket(url, pk);
+//            System.out.println(ticketId);
+//            String sellContract = PublishTicket.deploy(pk, url, libraryAddress, new BigInteger("30"));
+//            System.out.println(sellContract);
 
         } catch (IOException ex) {
             throw new RuntimeException("Error whilst sending json-rpc requests", ex);

@@ -1,4 +1,4 @@
-package eit.tub.ec.TicketResellBackend.Contracts;
+package eit.tub.ec.TicketResellBackend.Ethereum.Contracts;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;

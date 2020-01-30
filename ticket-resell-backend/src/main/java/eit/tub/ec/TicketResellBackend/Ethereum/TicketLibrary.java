@@ -1,6 +1,6 @@
 package eit.tub.ec.TicketResellBackend.Ethereum;
 
-import eit.tub.ec.TicketResellBackend.Contracts.Tickets;
+import eit.tub.ec.TicketResellBackend.Ethereum.Contracts.Tickets;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
