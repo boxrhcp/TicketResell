@@ -66,10 +66,16 @@ export default class EventTable extends Vue {
 
     let confirmBuy = confirm("Are you sure you want to buy " + selectedEvent.name + "?");
     if(confirmBuy) {
-      alert("Bought");
-    }
-    else {
-      alert("K didnt buy");
+      Ticket.RetrieveUnSold(ticket.eventId).then(t => {
+        const unsoldTicket = t[0];
+        Ticket.Buy(ticket.ownerId, unsoldTicket.id).then(r => {
+          if(r.success === true) {
+            alert('Successfully bought the ticket to ' + selectedEvent.name);
+          }
+        }).catch(r => {
+          alert("bad stuff happned when trying to buy the ticket\n" + r.message);
+        });
+      });
     }
   }
 }
