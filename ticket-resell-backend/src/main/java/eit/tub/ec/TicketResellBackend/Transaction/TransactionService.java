@@ -45,7 +45,7 @@ public class TransactionService {
 
         Ticket ticket = ticketService.findById(transaction.getTickedId());
 
-        if (!ticket.isOnSale())
+        if (!ticket.getOnSale())
             throw new TicketNotOnSaleException(ticket.getId());
 
         Float price = ticket.getPrice();

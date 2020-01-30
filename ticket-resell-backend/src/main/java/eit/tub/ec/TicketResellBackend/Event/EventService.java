@@ -45,6 +45,7 @@ public class EventService {
         ticket.setEventId(eventId);
         ticket.setOwnerId(organizerId);
         ticket.setPrice(price);
+        ticket.setOnSale(Boolean.TRUE);
         ticket.setEthUri(String.valueOf(ticket.hashCode()));
 
         ticket = ticketRepository.save(ticket);

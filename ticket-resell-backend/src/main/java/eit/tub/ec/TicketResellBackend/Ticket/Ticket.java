@@ -14,7 +14,7 @@ public class Ticket {
     private Long eventId;
     private Long ownerId;
     private Float price;
-    private Boolean onSale = true;
+    private Boolean onSale;
     private String ethUri;
     private Long ethId;
     private Long sellContractId;
@@ -53,7 +53,7 @@ public class Ticket {
         this.price = price;
     }
 
-    public Boolean isOnSale() {
+    public Boolean getOnSale() {
         return onSale;
     }
 

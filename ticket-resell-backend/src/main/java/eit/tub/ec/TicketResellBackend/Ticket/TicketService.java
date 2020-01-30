@@ -5,6 +5,7 @@ import eit.tub.ec.TicketResellBackend.Ticket.Exception.BlockchainTicketUpdateExc
 import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotFoundException;
 import eit.tub.ec.TicketResellBackend.Utils.APIPatch;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -25,10 +26,11 @@ public class TicketService {
                 () -> new TicketNotFoundException(ticketId));
     }
 
+    @Transactional
     public void updateTicket(Ticket ticketUpdate, Ticket ticket) {
 
         if (ticketUpdate.getPrice() != null && !ticketUpdate.getPrice().equals(ticket.getPrice())) {
-            if (ticket.isOnSale()) {
+            if (ticket.getOnSale() && (ticketUpdate.getOnSale() != Boolean.FALSE)) {
                 if (!contractService.changeTicketPrice(ticket)) {
                     throw new BlockchainTicketUpdateException();
                 }
@@ -37,8 +39,8 @@ public class TicketService {
             }
         }
 
-        if (ticketUpdate.isOnSale() != null && (ticketUpdate.isOnSale() != ticket.isOnSale())) {
-            if (ticketUpdate.isOnSale()) {
+        if (ticketUpdate.getOnSale() != null && (ticketUpdate.getOnSale() != ticket.getOnSale())) {
+            if (ticketUpdate.getOnSale()) {
                 contractService.offerTicketForSale(ticket);
             } else {
                 contractService.cancelTicketForSale(ticket);
