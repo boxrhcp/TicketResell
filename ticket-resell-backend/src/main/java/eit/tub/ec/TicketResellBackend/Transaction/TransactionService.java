@@ -7,16 +7,14 @@ import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
 import eit.tub.ec.TicketResellBackend.Ticket.TicketRepository;
 import eit.tub.ec.TicketResellBackend.Ticket.TicketService;
 import eit.tub.ec.TicketResellBackend.Transaction.Exception.BlockchainTransactionException;
-import eit.tub.ec.TicketResellBackend.User.Exception.UserNotFoundException;
+import eit.tub.ec.TicketResellBackend.Transaction.Exception.TransactionSameBuyerAndOwnerException;
 import eit.tub.ec.TicketResellBackend.User.Exception.UserWithoutEthWalletException;
 import eit.tub.ec.TicketResellBackend.User.User;
-import eit.tub.ec.TicketResellBackend.User.UserRepository;
 import eit.tub.ec.TicketResellBackend.User.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class TransactionService {
@@ -54,6 +52,10 @@ public class TransactionService {
 
         User buyer = userService.findById(transaction.getBuyerId());
 
+        if (ticket.getOwnerId().equals(buyer.getId())) {
+            throw new TransactionSameBuyerAndOwnerException();
+        }
+
         if (buyer.getEthAddress() == null) {
             throw new UserWithoutEthWalletException(buyer.getId());
         }
@@ -68,8 +70,6 @@ public class TransactionService {
         transaction.setDate(LocalDateTime.now());
         transactionRepository.save(transaction);
 
-        ticket.setOwnerId(buyer.getId());
-        ticket.setOnSale(false, null);
         ticketRepository.save(ticket);
 
         return transaction;

@@ -3,6 +3,7 @@ package eit.tub.ec.TicketResellBackend.Transaction;
 import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotFoundException;
 import eit.tub.ec.TicketResellBackend.Ticket.Exception.TicketNotOnSaleException;
 import eit.tub.ec.TicketResellBackend.Transaction.Exception.BlockchainTransactionException;
+import eit.tub.ec.TicketResellBackend.Transaction.Exception.TransactionSameBuyerAndOwnerException;
 import eit.tub.ec.TicketResellBackend.User.Exception.UserNotFoundException;
 import eit.tub.ec.TicketResellBackend.User.Exception.UserWithoutEthWalletException;
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
@@ -40,7 +41,8 @@ public class TransactionController {
         } catch (TicketNotFoundException
                 | UserNotFoundException
                 | TicketNotOnSaleException
-                | UserWithoutEthWalletException e) {
+                | UserWithoutEthWalletException
+                | TransactionSameBuyerAndOwnerException e) {
             response = ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new APIError(HttpStatus.BAD_REQUEST, e.getMessage()));
