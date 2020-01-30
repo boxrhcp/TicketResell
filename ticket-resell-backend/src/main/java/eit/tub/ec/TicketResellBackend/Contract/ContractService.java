@@ -115,6 +115,8 @@ public class ContractService {
         if(!destroyTicketContract(ownerContract, owner)) {
             throw new BlockchainUnsuccessfulOwnerContractDestructionException(ownerContract.getId(), owner.getId());
         }
+
+        ticket.setSellContractId(null);
     }
 
     @Transactional
