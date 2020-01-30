@@ -6,14 +6,12 @@ import eit.tub.ec.TicketResellBackend.Ethereum.PublishTicket;
 import eit.tub.ec.TicketResellBackend.Ethereum.TicketLibrary;
 import eit.tub.ec.TicketResellBackend.Ethereum.TicketPaymentManager;
 import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
-import eit.tub.ec.TicketResellBackend.Contract.Exception.ContractNotFoundException;
 import eit.tub.ec.TicketResellBackend.User.User;
 import eit.tub.ec.TicketResellBackend.User.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.math.BigInteger;
 import java.util.Optional;
 
@@ -33,8 +31,6 @@ public class ContractService {
     @Value("${ethereum.admin.pk:0x8919ebf1ab2451f7b7f1b1428dc9f81a34eb9aecef4580b275ed57030c23451a}")
     private String adminPK;
 
-    private TicketLibrary ticketLibrary;
-
     public ContractService(
             ContractRepository contractRepository,
             UserService userService) {
@@ -42,16 +38,8 @@ public class ContractService {
         this.userService = userService;
     }
 
-    @PostConstruct
-    @Transactional
-    public void postConstruct() {
-        ticketLibrary = new TicketLibrary(ticketLibraryAddress, blockchainUrl, adminPK);
-
-        Contract contract = new Contract();
-        contract.setOwnerId(0L);
-        contract.setEthAddress(ticketLibraryAddress);
-        contract.setType(ContractType.TICKET_LIBRARY);
-        contractRepository.save(contract);
+    private TicketLibrary getTicketLibrary(String userPK) {
+        return new TicketLibrary(ticketLibraryAddress, blockchainUrl, userPK);
     }
 
     public Contract findById(Long contractId) {
@@ -61,6 +49,9 @@ public class ContractService {
     }
 
     public Ticket createTicket(Ticket ticket) {
+        User owner = userService.findById(ticket.getOwnerId());
+        TicketLibrary ticketLibrary = getTicketLibrary(owner.getEthKey());
+
         try {
             ticketLibrary.createTicket(ticket.getEthUri());
             ticket.setEthId(ticketLibrary.getLastTicketId().longValue());
@@ -101,15 +92,15 @@ public class ContractService {
 
         ticket.setSellContractId(contract.getId());
 
-        this.approveTicketForModification(ticket);
+        this.approveTicketForModification(contract, ticket, owner);
     }
 
     @Transactional
-    private void approveTicketForModification(Ticket ticket) {
-        Contract contract = this.findById(ticket.getSellContractId());
+    private void approveTicketForModification(Contract ownerContract, Ticket ticket, User owner) {
+        TicketLibrary ticketLibrary = getTicketLibrary(owner.getEthKey());
 
         try {
-            ticketLibrary.approve(contract.getEthAddress(), BigInteger.valueOf(ticket.getEthId()));
+            ticketLibrary.approve(ownerContract.getEthAddress(), BigInteger.valueOf(ticket.getEthId()));
         } catch (Exception e) {
             e.printStackTrace();
             throw new BlockchainTicketApprovalException(e.getMessage(), ticket.getId());
