@@ -5,6 +5,7 @@
         <tr>
           <th scope="col">Event ID</th>
           <th scope="col">Name</th>
+          <th scope="col">Date</th>
           <th scope="col">Venue</th>
           <th scope="col">Maximum Tickets</th>
           <th scope="col">Ticket Price</th>
@@ -16,8 +17,9 @@
           <td>
             <a href="#" v-bind:id="concert.id" @click="openEvent($event)">{{ concert.name }}</a>
           </td>
-          <td>{{ concert.venue }}</td>
-          <td>{{ concert.maxTickets }}</td>
+          <td>{{ concert.datetime | toLocaleDateString }} {{ concert.datetime | toLocaleTimeString }}</td>
+          <td>{{ concert.place }}</td>
+          <td>{{ concert.ntickets }}</td>
           <td>{{ concert.price }}</td>
         </tr>
       </tbody>
@@ -39,7 +41,7 @@
             </button>
           </div>
           <div class="modal-body">
-              <p>Venue : {{ selectedEvent.venue }}</p>
+              <p>Venue : {{ selectedEvent.place }}</p>
               <p>Organizer : {{ selectedEventOrganizer.name }}</p>
           </div>
           <div class="modal-footer">
@@ -56,8 +58,20 @@ import { Component, Vue } from "vue-property-decorator";
 import store from "../store";
 import { Concert } from "../models/Concert";
 import { User } from '../models/User';
+import moment from 'moment';
 
-@Component
+@Component({
+  name: "EventTable",
+  filters: {
+    toLocaleDateString(timeStamp: string) {
+      return moment(timeStamp).format("MMM Do YYYY");
+    },
+    toLocaleTimeString(timeStamp: string) {
+      return moment(timeStamp).format("LT");
+    }
+  }
+
+})
 export default class EventTable extends Vue {
   private concerts: Concert[] = [];
   private selectedEvent: Concert = new Concert();

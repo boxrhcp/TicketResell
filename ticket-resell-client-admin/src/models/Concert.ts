@@ -4,16 +4,18 @@ import axios from 'axios';
 export class Concert {
     id !: Number;
     name !: String;
-    venue !: String;
-    maxTickets !: Number;
+    date !: Date;
+    place !: String;
     price !: Number;
     organizerId !: Number;
+    ntickets !: Number;
 
     public static Save(event : Concert) : Promise<ApiResponse> {
         return new Promise(function(resolve, reject) {
-            const requestBody = JSON.stringify(event);
-            axios.post(process.env.VUE_APP_SERVER_URL + '/events', requestBody).then(result => {
-                let apiResponse : ApiResponse = new ApiResponse();                    
+            console.log(JSON.stringify(event));
+            let apiResponse : ApiResponse = new ApiResponse();       
+            axios.post(process.env.VUE_APP_SERVER_URL + '/events', event).then(result => {
+                             
                 if(result.status === 200) {
                     apiResponse.success = true;
                     apiResponse.message = result.data;
@@ -24,6 +26,15 @@ export class Concert {
                     apiResponse.message = result.data;
                     reject(apiResponse);
                 }
+            }).catch(error => {
+                apiResponse.success = false;
+                if(error.response) {
+                    apiResponse.message = error.response.data.message;
+                }
+                else {
+                    apiResponse.message = error.message;
+                }
+                reject(apiResponse);
             });
         });        
     }
