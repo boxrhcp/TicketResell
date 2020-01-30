@@ -57,7 +57,7 @@ public class Ticket {
         return onSale;
     }
 
-    public void setOnSale(Boolean onSale, Float price) {
+    public void setOnSale(Boolean onSale) {
         this.onSale = onSale;
     }
 

@@ -126,9 +126,14 @@ public class ContractService {
             throw new BlockchainUnsuccessfulTicketPurchaseException(ticket.getId(), buyer.getId());
         }
 
+        ticket.setOwnerId(buyer.getId());
+
         if(!destroyTicketContract(ownerContract, owner)) {
             throw new BlockchainUnsuccessfulOwnerContractDestructionException(ownerContract.getId(), owner.getId());
         }
+
+        ticket.setOnSale(false);
+        ticket.setSellContractId(null);
     }
 
     private boolean changeTicketOwner(Contract ownerContract, Ticket ticket, User buyer) {
