@@ -16,11 +16,11 @@
         <tr v-for="concert in concerts" v-bind:key="concert.id">
           <th scope="row">{{ concert.id }}</th>
           <td>{{ concert.name }}</td>
-          <td>{{ concert.venue }}</td>
+          <td>{{ concert.place }}</td>
           <td>{{ concert.datetime | toLocaleDateString }} {{ concert.datetime | toLocaleTimeString }}</td>
-          <td>{{ concert.availableTickets }}</td>
+          <td>{{ concert.availableTickets | showAvailableTickets }}</td>
           <td>{{ concert.price }}</td>
-          <td><button type="button" class="btn btn-success" v-bind:id="concert.id" @click="buyTicket($event)">Buy</button></td>
+          <td><button type="button" :disabled="concert.availableTickets === 0" class="btn btn-success" v-bind:id="concert.id" @click="buyTicket($event)">Buy</button></td>
         </tr>
       </tbody>
     </table>
@@ -38,10 +38,13 @@ import { Ticket } from "../models/Ticket";
   name: "EventTable",
   filters: {
     toLocaleDateString(timeStamp: string) {
-      return moment(timeStamp).format("MMMM Do YYYY");
+      return moment(timeStamp).format("MMM Do YYYY");
     },
     toLocaleTimeString(timeStamp: string) {
       return moment(timeStamp).format("LT");
+    },
+    showAvailableTickets(availableTickets: number) {
+      return availableTickets > 0 ? availableTickets : 'Sold out';
     }
   }
 })
@@ -50,7 +53,7 @@ export default class EventTable extends Vue {
 
   mounted() {
     Concert.Retrieve().then(e => {
-        this.concerts = e.filter(c => c.availableTickets > 0);
+        this.concerts = e;
     });
   }
 
