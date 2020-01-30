@@ -6,10 +6,9 @@ import eit.tub.ec.TicketResellBackend.Ethereum.PublishTicket;
 import eit.tub.ec.TicketResellBackend.Ethereum.TicketLibrary;
 import eit.tub.ec.TicketResellBackend.Ethereum.TicketPaymentManager;
 import eit.tub.ec.TicketResellBackend.Ticket.Ticket;
-import eit.tub.ec.TicketResellBackend.Transaction.Exception.ContractNotFoundException;
-import eit.tub.ec.TicketResellBackend.User.Exception.UserNotFoundException;
+import eit.tub.ec.TicketResellBackend.Contract.Exception.ContractNotFoundException;
 import eit.tub.ec.TicketResellBackend.User.User;
-import eit.tub.ec.TicketResellBackend.User.UserRepository;
+import eit.tub.ec.TicketResellBackend.User.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +21,8 @@ import java.util.Optional;
 @Service
 public class ContractService {
     private ContractRepository contractRepository;
-    private UserRepository userRepository;
+    private UserService userService;
+
 
     @Value("${ethereum.connection.url:http://18.194.30.246:8545}")
     private String blockchainUrl;
@@ -35,9 +35,11 @@ public class ContractService {
 
     private TicketLibrary ticketLibrary;
 
-    public ContractService(ContractRepository contractRepository, UserRepository userRepository) {
+    public ContractService(
+            ContractRepository contractRepository,
+            UserService userService) {
         this.contractRepository = contractRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @PostConstruct
@@ -50,6 +52,12 @@ public class ContractService {
         contract.setEthAddress(ticketLibraryAddress);
         contract.setType(ContractType.TICKET_LIBRARY);
         contractRepository.save(contract);
+    }
+
+    public Contract findById(Long contractId) {
+        Optional<Contract> ownerContractOptional = contractRepository.findById(contractId);
+        return ownerContractOptional.orElseThrow(
+                () -> new ContractNotFoundException(contractId));
     }
 
     public Ticket createTicket(Ticket ticket) {
@@ -70,9 +78,8 @@ public class ContractService {
     }
 
     @Transactional
-    public Ticket offerTicketForSale(Ticket ticket) {
-        Optional<User> ownerOptional = userRepository.findById(ticket.getOwnerId());
-        User owner = ownerOptional.orElseThrow(() -> new UserNotFoundException(ticket.getOwnerId()));
+    public void offerTicketForSale(Ticket ticket) {
+        User owner = userService.findById(ticket.getOwnerId());
 
         String forSaleContractAddress;
         try {
@@ -93,14 +100,13 @@ public class ContractService {
         contract = contractRepository.save(contract);
 
         ticket.setSellContractId(contract.getId());
-        return ticket;
+
+        this.approveTicketForModification(ticket);
     }
 
     @Transactional
-    public void approveTicketForModification(Ticket ticket) {
-        Optional<Contract> contractOptional = contractRepository.findById(ticket.getSellContractId());
-        Contract contract = contractOptional.orElseThrow(
-                () -> new BlockchainContractNotFoundException(ticket.getSellContractId()));
+    private void approveTicketForModification(Ticket ticket) {
+        Contract contract = this.findById(ticket.getSellContractId());
 
         try {
             ticketLibrary.approve(contract.getEthAddress(), BigInteger.valueOf(ticket.getEthId()));
@@ -111,25 +117,30 @@ public class ContractService {
     }
 
     @Transactional
-    public void purchaseTicket(Ticket ticket, User buyer) {
-        Optional<Contract> ownerContractOptional = contractRepository.findById(ticket.getSellContractId());
-        Contract ownerContract = ownerContractOptional.orElseThrow(
-                () -> new ContractNotFoundException(ticket.getSellContractId()));
+    public void cancelTicketForSale(Ticket ticket) {
+        Contract ownerContract = this.findById(ticket.getSellContractId());
+        User owner = userService.findById(ticket.getOwnerId());
 
-        Optional<User> userOptional = userRepository.findById(ticket.getOwnerId());
-        User owner = userOptional.orElseThrow(
-                () -> new UserNotFoundException(ticket.getOwnerId()));
-
-        if(!changeOwner(ownerContract, ticket, buyer) || !destroyContract(ownerContract, owner)) {
-            throw new BlockchainUnsuccessfulTicketPurchaseException(ticket.getId(), buyer.getId());
-        }
-
-        if(!destroyContract(ownerContract, owner)) {
+        if(!destroyTicketContract(ownerContract, owner)) {
             throw new BlockchainUnsuccessfulOwnerContractDestructionException(ownerContract.getId(), owner.getId());
         }
     }
 
-    private boolean changeOwner(Contract ownerContract, Ticket ticket, User buyer) {
+    @Transactional
+    public void purchaseTicket(Ticket ticket, User buyer) {
+        Contract ownerContract = this.findById(ticket.getSellContractId());
+        User owner = userService.findById(ticket.getOwnerId());
+
+        if(!changeTicketOwner(ownerContract, ticket, buyer)) {
+            throw new BlockchainUnsuccessfulTicketPurchaseException(ticket.getId(), buyer.getId());
+        }
+
+        if(!destroyTicketContract(ownerContract, owner)) {
+            throw new BlockchainUnsuccessfulOwnerContractDestructionException(ownerContract.getId(), owner.getId());
+        }
+    }
+
+    private boolean changeTicketOwner(Contract ownerContract, Ticket ticket, User buyer) {
         TicketPaymentManager ticketPaymentManager = new TicketPaymentManager(
                 ownerContract.getEthAddress(),
                 this.blockchainUrl,
@@ -148,7 +159,8 @@ public class ContractService {
         return success;
     }
 
-    private boolean destroyContract(Contract ownerContract, User owner) {
+    @Transactional
+    private boolean destroyTicketContract(Contract ownerContract, User owner) {
         OwnerContractManager ownerContractManager = new OwnerContractManager(
                 ownerContract.getEthAddress(),
                 this.blockchainUrl,
@@ -157,12 +169,34 @@ public class ContractService {
         boolean success;
         try {
             success = ownerContractManager.destroyContract();
+            ownerContract.setDestroyed(true);
+            contractRepository.save(ownerContract);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BlockchainTicketOwnerContractDestructionException(
                     e.getMessage(),
                     ownerContract.getId(),
                     owner.getId());
+        }
+
+        return success;
+    }
+
+    public boolean changeTicketPrice(Ticket ticket) {
+        Contract ownerContract = this.findById(ticket.getSellContractId());
+        User owner = userService.findById(ticket.getOwnerId());
+
+        OwnerContractManager ownerContractManager = new OwnerContractManager(
+                ownerContract.getEthAddress(),
+                this.blockchainUrl,
+                owner.getEthKey());
+
+        boolean success;
+        try {
+            success = ownerContractManager.setNewPrice(BigInteger.valueOf(ticket.getPrice().longValue()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BlockchainTicketPriceUpdateException(e.getMessage(), ticket.getId(), ticket.getPrice());
         }
 
         return success;

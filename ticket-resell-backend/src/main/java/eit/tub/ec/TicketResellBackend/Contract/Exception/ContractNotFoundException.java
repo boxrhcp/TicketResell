@@ -1,4 +1,4 @@
-package eit.tub.ec.TicketResellBackend.Transaction.Exception;
+package eit.tub.ec.TicketResellBackend.Contract.Exception;
 
 public class ContractNotFoundException extends RuntimeException {
     public ContractNotFoundException(Long id) {

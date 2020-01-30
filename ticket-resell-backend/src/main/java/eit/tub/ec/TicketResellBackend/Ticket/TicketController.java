@@ -1,7 +1,7 @@
 package eit.tub.ec.TicketResellBackend.Ticket;
 
+import eit.tub.ec.TicketResellBackend.Ticket.Exception.BlockchainTicketUpdateException;
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
-import eit.tub.ec.TicketResellBackend.Utils.APIPatch;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +36,7 @@ public class TicketController {
     @RequestMapping(value = "/tickets/{id}", method = RequestMethod.PATCH)
     public ResponseEntity<?> patchTicket(@PathVariable Long id, @RequestBody Ticket ticketUpdate) {
         Optional<Ticket> ticketOptional = ticketRepository.findById(id);
-        Ticket ticket = null;
+        Ticket ticket;
 
         if (!ticketOptional.isPresent()) {
             return ResponseEntity
@@ -46,10 +46,17 @@ public class TicketController {
             ticket = ticketOptional.get();
         }
 
-        ticketService.update(ticketUpdate, ticket);
+        ResponseEntity<?> response;
+        try {
+            ticketService.updateTicket(ticketUpdate, ticket);
+            ticket = ticketRepository.save(ticket);
+            response = ResponseEntity.status(HttpStatus.OK).body(ticket);
+        } catch (BlockchainTicketUpdateException e) {
+            response = ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new APIError(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+        }
 
-        ticket = ticketRepository.save(ticket);
-
-        return ResponseEntity.status(HttpStatus.OK).body(ticket);
+        return response;
     }
 }

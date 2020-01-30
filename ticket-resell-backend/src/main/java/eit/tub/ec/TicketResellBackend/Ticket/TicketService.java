@@ -25,14 +25,24 @@ public class TicketService {
                 () -> new TicketNotFoundException(ticketId));
     }
 
-    public void update(Ticket ticketUpdate, Ticket ticket) {
+    public void updateTicket(Ticket ticketUpdate, Ticket ticket) {
 
         if (ticketUpdate.getPrice() != null && !ticketUpdate.getPrice().equals(ticket.getPrice())) {
-            // TODO ticketOnSale==true? change contract price : change ticket price
+            if (ticket.isOnSale()) {
+                if (!contractService.changeTicketPrice(ticket)) {
+                    throw new BlockchainTicketUpdateException();
+                }
+            } else {
+                ticket.setPrice(ticketUpdate.getPrice());
+            }
         }
 
         if (ticketUpdate.isOnSale() != null && (ticketUpdate.isOnSale() != ticket.isOnSale())) {
-            // TODO updateOnSale==true? deploy contract : destroy contract
+            if (ticketUpdate.isOnSale()) {
+                contractService.offerTicketForSale(ticket);
+            } else {
+                contractService.cancelTicketForSale(ticket);
+            }
         }
 
         APIPatch.merge(ticketUpdate, ticket);

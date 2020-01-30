@@ -14,6 +14,7 @@ public class Contract {
     private Long ownerId;
     private String ethAddress;
     private ContractType type;
+    private Boolean destroyed = false;
 
     public Contract() {}
 
@@ -47,5 +48,13 @@ public class Contract {
 
     public void setType(ContractType type) {
         this.type = type;
+    }
+
+    public Boolean getDestroyed() {
+        return destroyed;
+    }
+
+    public void setDestroyed(Boolean destroyed) {
+        this.destroyed = destroyed;
     }
 }

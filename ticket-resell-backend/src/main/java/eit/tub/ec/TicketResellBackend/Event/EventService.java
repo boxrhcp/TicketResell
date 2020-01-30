@@ -31,10 +31,8 @@ public class EventService {
         Ticket ticket;
         for (int i = 0; i < event.getNTickets(); i++) {
             ticket = createTicket(event.getId(), event.getOrganizerId(), event.getPrice());
-            ticket = contractService.offerTicketForSale(ticket);
+            contractService.offerTicketForSale(ticket);
             ticketRepository.save(ticket);
-
-            contractService.approveTicketForModification(ticket);
         }
 
         return savedEvent;
