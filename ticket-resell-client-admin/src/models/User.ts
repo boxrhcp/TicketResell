@@ -30,12 +30,7 @@ export class User {
             axios.get(process.env.VUE_APP_SERVER_URL + '/users/' + id).then(result => {
                 if(result.status === 200) {
                     let user: User = Object.assign(new User(), result.data);
-                    if(user.organizer === true) {
-                        resolve(user);
-                    }
-                    else {
-                        reject(Error("User is not an organizer."));
-                    }
+                    resolve(user);
                 }
                 else {
                     reject(Error(result.statusText));

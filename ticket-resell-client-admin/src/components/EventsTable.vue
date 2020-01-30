@@ -41,8 +41,32 @@
             </button>
           </div>
           <div class="modal-body">
-              <p>Venue : {{ selectedEvent.place }}</p>
-              <p>Organizer : {{ selectedEventOrganizer.name }}</p>
+            <p>Date : {{ selectedEvent.datetime | toLocaleDateString }} {{ selectedEvent.datetime | toLocaleTimeString }}</p>
+            <p>Venue : {{ selectedEvent.place }}</p>
+            <p>Organizer : {{ selectedEventOrganizer.name }}</p>
+            <div v-if="soldTickets.length > 0 || unsoldTickets.length > 0" class="ticketowners-table">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Sold</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="ticket in soldTickets" v-bind:key="ticket.id">
+                    <th scope="row">{{ ticket.id }}</th>
+                    <td>{{ getOwnerName(ticket.ownerId) }}</td>
+                    <td>{{ !ticket.onSale }}</td>
+                  </tr>
+                  <tr v-for="ticket in unsoldTickets" v-bind:key="ticket.id">
+                    <th scope="row">{{ ticket.id }}</th>
+                    <td>{{ ticket.ownerId }}</td>                    
+                    <td>{{ !ticket.onSale }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
@@ -57,8 +81,9 @@
 import { Component, Vue } from "vue-property-decorator";
 import store from "../store";
 import { Concert } from "../models/Concert";
-import { User } from '../models/User';
-import moment from 'moment';
+import { User } from "../models/User";
+import { Ticket } from "@/models/Ticket";
+import moment from "moment";
 
 @Component({
   name: "EventTable",
@@ -70,12 +95,14 @@ import moment from 'moment';
       return moment(timeStamp).format("LT");
     }
   }
-
 })
 export default class EventTable extends Vue {
   private concerts: Concert[] = [];
   private selectedEvent: Concert = new Concert();
   private selectedEventOrganizer: User = new User();
+  private soldTickets: Ticket[] = [];
+  private unsoldTickets: Ticket[] = [];
+  private ticketOwners: User[] = [];
 
   mounted() {
     Concert.Retrieve().then(e => (this.concerts = e));
@@ -84,12 +111,38 @@ export default class EventTable extends Vue {
   private openEvent(event: any): void {
     let eventId = event.target.id;
     Concert.RetrieveById(eventId).then(c => {
-        this.selectedEvent = c;
-        User.RetrieveById(c.organizerId).then(o => {
-            this.selectedEventOrganizer = o;
-            $('#eventModal').modal();
-        });        
-    });    
+      this.selectedEvent = c;
+      User.RetrieveById(c.organizerId).then(o => {
+        this.selectedEventOrganizer = o;
+        $("#eventModal").modal();
+        Ticket.RetrieveSold(eventId)
+          .then(t => {
+            t.forEach(t => {
+              User.RetrieveById(t.ownerId).then(o => this.ticketOwners.push(o));
+            });
+            this.soldTickets = t;
+          })
+          .catch(t => {
+            alert("Could not fetch sold tickets :( \n" + t);
+          });
+        Ticket.RetrieveUnSold(eventId)
+          .then(t => {
+            t.forEach(t => {
+              User.RetrieveById(t.ownerId).then(o => this.ticketOwners.push(o));
+            });
+            this.unsoldTickets = t;
+          })
+          .catch(t => {
+            alert("Could not fetch unsold tickets :( \n" + t);
+          });
+      });
+    });
+  }
+
+  private getOwnerName(ownerId: Number): String {
+    let ownerName : String = '';
+    ownerName = this.ticketOwners.filter(t => t.id == ownerId)[0].name;
+    return ownerName;
   }
 }
 </script>
