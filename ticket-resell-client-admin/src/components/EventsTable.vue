@@ -58,7 +58,7 @@ import { Concert } from "../models/Concert";
 import { Organizer } from '../models/Organizer';
 
 @Component
-export default class OrganizersTable extends Vue {
+export default class EventTable extends Vue {
   private concerts: Concert[] = [];
   private selectedEvent: Concert = new Concert();
   private selectedEventOrganizer: Organizer = new Organizer();
