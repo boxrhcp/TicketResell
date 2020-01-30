@@ -21,15 +21,15 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import {Organizer} from '@/models/Organizer';
+import { User } from '@/models/User';
 import store from '../store';
 
 @Component
 export default class OrganizersTable extends Vue {
-  private organizers: Organizer[] = [];
+  private organizers: User[] = [];
 
   mounted() {
-    Organizer.Retrieve().then(d => this.organizers = d );
+    User.Retrieve().then(d => this.organizers = d );
   }
 
   private login(event: any) : void {

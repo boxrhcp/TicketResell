@@ -1,18 +1,20 @@
 import axios from "axios";
 
-export class Organizer {
+export class User {
     id !: Number;
     name !: String;
-    etherium_account !: String;
+    organizer !: Boolean;
 
-    public static Retrieve() : Promise<Organizer[]> {
+    public static Retrieve() : Promise<User[]> {
         return new Promise(function(resolve, reject) {
-            axios.get(process.env.VUE_APP_SERVER_URL + '/Organizers').then(result => {
+            axios.get(process.env.VUE_APP_SERVER_URL + '/users').then(result => {
                 if(result.status === 200) {
-                    let organizers : Organizer[] = [];
+                    let organizers : User[] = [];
                     result.data.forEach((element: any, index: Number) => {
-                        let organizer: Organizer = Object.assign(new Organizer(), element);
-                        organizers.push(organizer);
+                        let user: User = Object.assign(new User(), element);
+                        if(user.organizer === true) {
+                            organizers.push(user);
+                        }
                     });
                     resolve(organizers);
                 }
@@ -23,12 +25,12 @@ export class Organizer {
         });        
     }
 
-    public static RetrieveById(id : Number) : Promise<Organizer> {
+    public static RetrieveById(id : Number) : Promise<User> {
         return new Promise(function(resolve, reject) {
-            axios.get(process.env.VUE_APP_SERVER_URL + '/Organizers/' + id).then(result => {
+            axios.get(process.env.VUE_APP_SERVER_URL + '/users/' + id).then(result => {
                 if(result.status === 200) {
-                    let organizer: Organizer = Object.assign(new Organizer(), result.data);
-                    resolve(organizer);
+                    let user: User = Object.assign(new User(), result.data);
+                    resolve(user);
                 }
                 else {
                     reject(Error(result.statusText));
