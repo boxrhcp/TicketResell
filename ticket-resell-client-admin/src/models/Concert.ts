@@ -12,7 +12,7 @@ export class Concert {
     public static Save(event : Concert) : Promise<ApiResponse> {
         return new Promise(function(resolve, reject) {
             const requestBody = JSON.stringify(event);
-            axios.post(process.env.VUE_APP_SERVER_URL + '/Events', requestBody).then(result => {
+            axios.post(process.env.VUE_APP_SERVER_URL + '/events', requestBody).then(result => {
                 let apiResponse : ApiResponse = new ApiResponse();                    
                 if(result.status === 200) {
                     apiResponse.success = true;
@@ -30,7 +30,7 @@ export class Concert {
 
     public static Retrieve() : Promise<Concert[]> {
         return new Promise(function(resolve, reject) {
-            axios.get(process.env.VUE_APP_SERVER_URL + '/Events').then(result => {
+            axios.get(process.env.VUE_APP_SERVER_URL + '/events').then(result => {
                 if(result.status === 200) {
                     let events : Concert[] = [];
                     result.data.forEach((element: any, index: Number) => {
@@ -48,7 +48,7 @@ export class Concert {
 
     public static RetrieveById(id : Number) : Promise<Concert> {
         return new Promise(function(resolve, reject) {
-            axios.get(process.env.VUE_APP_SERVER_URL + '/Events/' + id).then(result => {
+            axios.get(process.env.VUE_APP_SERVER_URL + '/events/' + id).then(result => {
                 if(result.status === 200) {
                     let event: Concert = Object.assign(new Concert(), result.data);
                     resolve(event);

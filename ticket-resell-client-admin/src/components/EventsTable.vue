@@ -55,13 +55,13 @@
 import { Component, Vue } from "vue-property-decorator";
 import store from "../store";
 import { Concert } from "../models/Concert";
-import { Organizer } from '../models/Organizer';
+import { User } from '../models/User';
 
 @Component
 export default class EventTable extends Vue {
   private concerts: Concert[] = [];
   private selectedEvent: Concert = new Concert();
-  private selectedEventOrganizer: Organizer = new Organizer();
+  private selectedEventOrganizer: User = new User();
 
   mounted() {
     Concert.Retrieve().then(e => (this.concerts = e));
@@ -71,7 +71,7 @@ export default class EventTable extends Vue {
     let eventId = event.target.id;
     Concert.RetrieveById(eventId).then(c => {
         this.selectedEvent = c;
-        Organizer.RetrieveById(c.organizerId).then(o => {
+        User.RetrieveById(c.organizerId).then(o => {
             this.selectedEventOrganizer = o;
             $('#eventModal').modal();
         });        
