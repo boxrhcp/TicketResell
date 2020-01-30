@@ -28,9 +28,6 @@ public class ContractService {
     @Value("${ethereum.contract.ticket.library:0x0d2139319b5473d7b5bcbd6eae5d92a982532ad8}")
     private String ticketLibraryAddress;
 
-    @Value("${ethereum.admin.pk:0x8919ebf1ab2451f7b7f1b1428dc9f81a34eb9aecef4580b275ed57030c23451a}")
-    private String adminPK;
-
     public ContractService(
             ContractRepository contractRepository,
             UserService userService) {
