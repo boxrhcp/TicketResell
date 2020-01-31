@@ -6,7 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 public class TicketController {
@@ -20,17 +23,31 @@ public class TicketController {
 
     @RequestMapping(value = "/tickets", method = RequestMethod.GET)
     public ResponseEntity<?> getTickets(
+            @RequestParam(required = false) Long ownerId,
             @RequestParam(required = false) Long eventId,
             @RequestParam(required = false) Boolean onSale) {
 
-        Iterable<Ticket> tickets;
-        if (eventId != null && onSale != null) {
-            tickets = ticketRepository.findByEventIdAndOnSale(eventId, onSale);
-        } else {
-            tickets = ticketRepository.findAll();
-        }
+        Iterable<Ticket> tickets = ticketRepository.findAll();
 
-        return ResponseEntity.status(HttpStatus.OK).body(tickets);
+        List<Ticket> filteredTickets = StreamSupport
+                .stream(tickets.spliterator(), false)
+                .filter(ticket -> {
+                    boolean pass = false;
+
+                    if (ownerId != null)
+                        pass =  ticket.getOwnerId().equals(ownerId);
+
+                    if (eventId != null)
+                        pass = ticket.getEventId().equals(eventId);
+
+                    if (onSale != null)
+                        pass = ticket.getOnSale() == onSale;
+
+                    return pass;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(filteredTickets);
     }
 
     @RequestMapping(value = "/tickets/{id}", method = RequestMethod.PATCH)
