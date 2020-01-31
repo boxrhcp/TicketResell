@@ -32,16 +32,16 @@ public class TicketController {
         List<Ticket> filteredTickets = StreamSupport
                 .stream(tickets.spliterator(), false)
                 .filter(ticket -> {
-                    boolean pass = false;
+                    boolean pass = true;
 
                     if (ownerId != null)
-                        pass =  ticket.getOwnerId().equals(ownerId);
+                        pass =  pass && ticket.getOwnerId().equals(ownerId);
 
                     if (eventId != null)
-                        pass = ticket.getEventId().equals(eventId);
+                        pass = pass && ticket.getEventId().equals(eventId);
 
                     if (onSale != null)
-                        pass = ticket.getOnSale() == onSale;
+                        pass = pass && (ticket.getOnSale() == onSale);
 
                     return pass;
                 })
