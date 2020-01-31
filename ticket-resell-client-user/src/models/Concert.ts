@@ -18,8 +18,8 @@ export class Concert {
                     let events : Concert[] = [];
                     result.data.forEach((element: any, index: Number) => {
                         let event: Concert = Object.assign(new Concert(), element);
-                        Ticket.RetrieveUnSold(event.id).then(t => {
-                            event.availableTickets = t.length;
+                        Ticket.Retrieve(event.id).then(t => {
+                            event.availableTickets = t.filter(u => u.onSale === true).length;
                             events.push(event);
                         });
                     });
