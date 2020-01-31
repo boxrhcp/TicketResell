@@ -17,7 +17,7 @@
           <td>
             <a href="#" v-bind:id="concert.id" @click="openEvent($event)">{{ concert.name }}</a>
           </td>
-          <td>{{ concert.datetime | toLocaleDateString }} {{ concert.datetime | toLocaleTimeString }}</td>
+          <td>{{ concert.date | toLocaleDateString }} {{ concert.date | toLocaleTimeString }}</td>
           <td>{{ concert.place }}</td>
           <td>{{ concert.ntickets }}</td>
           <td>{{ concert.price }}</td>
@@ -41,7 +41,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <p>Date : {{ selectedEvent.datetime | toLocaleDateString }} {{ selectedEvent.datetime | toLocaleTimeString }}</p>
+            <p>Date : {{ selectedEvent.date | toLocaleDateString }} {{ selectedEvent.date | toLocaleTimeString }}</p>
             <p>Venue : {{ selectedEvent.place }}</p>
             <p>Organizer : {{ selectedEventOrganizer.name }}</p>
             <div v-if="soldTickets.length > 0 || unsoldTickets.length > 0" class="ticketowners-table">
@@ -105,7 +105,13 @@ export default class EventTable extends Vue {
   private ticketOwners: User[] = [];
 
   mounted() {
-    Concert.Retrieve().then(e => (this.concerts = e));
+    Concert.Retrieve().then(e => {
+      e.forEach(c => {
+        if(c.id && c.date) {
+          this.concerts.push(c);
+        }
+      });
+    });
   }
 
   private openEvent(event: any): void {
