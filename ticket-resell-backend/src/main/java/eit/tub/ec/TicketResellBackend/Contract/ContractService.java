@@ -75,7 +75,7 @@ public class ContractService {
                     owner.getEthKey(),
                     blockchainUrl,
                     ticketLibraryAddress,
-                    BigInteger.valueOf(ticket.getPrice().longValue()));
+                    ticket.getPrice().floatValue());
         } catch (Exception e) {
             e.printStackTrace();
             throw new BlockchainTicketPublishingException(e.getMessage(), ticket.getId());
@@ -145,7 +145,7 @@ public class ContractService {
         try {
             success = ticketPaymentManager.buyTicket(
                 BigInteger.valueOf(ticket.getEthId()),
-                BigInteger.valueOf(ticket.getPrice().longValue()));
+                ticket.getPrice().floatValue());
         } catch (Exception e) {
             e.printStackTrace();
             throw new BlockchainTicketPurchaseException(e.getMessage(), ticket.getId(), buyer.getId());
@@ -188,7 +188,7 @@ public class ContractService {
 
         boolean success;
         try {
-            success = ownerContractManager.setNewPrice(BigInteger.valueOf(ticket.getPrice().longValue()));
+            success = ownerContractManager.setNewPrice(ticket.getPrice().floatValue());
         } catch (Exception e) {
             e.printStackTrace();
             throw new BlockchainTicketPriceUpdateException(e.getMessage(), ticket.getId(), ticket.getPrice());

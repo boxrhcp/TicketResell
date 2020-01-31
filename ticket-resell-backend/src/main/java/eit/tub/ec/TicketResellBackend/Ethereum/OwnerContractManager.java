@@ -69,7 +69,7 @@ public class OwnerContractManager {
      * @return status of transaction
      * @throws Exception if call goes wrong
      */
-    public boolean setNewPrice(BigInteger newPrice) throws Exception {
+    public boolean setNewPrice(float newPrice) throws Exception {
         BigDecimal value = Convert.toWei(new BigDecimal(newPrice), Convert.Unit.ETHER);
         return conn.setCurrentPrice(value.toBigInteger()).send().isStatusOK();
     }

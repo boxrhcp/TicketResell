@@ -11,7 +11,7 @@ import java.math.BigInteger;
 
 public class AccountManager {
 
-    Web3j web3j;
+    private Web3j web3j;
 
     /**
      * @param url to connect to ethereum
@@ -27,10 +27,10 @@ public class AccountManager {
      * @return user balance in ETHER
      * @throws IOException if call goes wrong
      */
-    public BigInteger getAccountBalance(String account) throws IOException {
+    public BigDecimal getAccountBalance(String account) throws IOException {
         return Convert.fromWei(new BigDecimal(web3j.ethGetBalance(
                 account, DefaultBlockParameterName.LATEST).send().getBalance()),
-                Convert.Unit.ETHER).toBigInteger();
+                Convert.Unit.ETHER);
     }
 
 }

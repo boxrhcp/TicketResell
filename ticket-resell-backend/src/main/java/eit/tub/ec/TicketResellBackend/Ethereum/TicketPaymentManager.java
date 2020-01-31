@@ -67,8 +67,8 @@ public class TicketPaymentManager {
      * @return the price in ETHER of the ticket
      * @throws Exception if call goes wrong
      */
-    public BigInteger getTicketPrice(BigInteger ticketId) throws Exception {
-        return Convert.fromWei(new BigDecimal(conn.currentPrice().send()), Convert.Unit.ETHER).toBigInteger();
+    public BigDecimal getTicketPrice(BigInteger ticketId) throws Exception {
+        return Convert.fromWei(new BigDecimal(conn.currentPrice().send()), Convert.Unit.ETHER);
     }
 
     /**
@@ -79,7 +79,7 @@ public class TicketPaymentManager {
      * @return state of the transaction
      * @throws Exception if call goes wrong
      */
-    public boolean buyTicket(BigInteger ticketId, BigInteger amount) throws Exception {
+    public boolean buyTicket(BigInteger ticketId, float amount) throws Exception {
         BigDecimal value = Convert.toWei(new BigDecimal(amount), Convert.Unit.ETHER);
         return conn.buyTicket(ticketId, value.toBigInteger()).send().isStatusOK();
     }

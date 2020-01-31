@@ -28,7 +28,7 @@ public class PublishTicket {
      * @throws Exception if the call to deploy goes wrong
      */
     public static String deploy(String ownerPK, String url, String ticketLibraryAddress,
-                                BigInteger price) throws Exception {
+                                float price) throws Exception {
         Web3j web3j = Web3j.build(new HttpService(url));
         Credentials credentials = Credentials.create(ownerPK);
         PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(web3j, 5000l, 5);

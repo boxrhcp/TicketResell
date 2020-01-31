@@ -12,6 +12,7 @@ import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.tx.response.PollingTransactionReceiptProcessor;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class MainTest {
@@ -31,13 +32,13 @@ public class MainTest {
             //String libraryAddress = deployLibrary(url, pk);
             String libraryAddress = "0x4d7661b9b36ffdaed779f3e48f378311be9f413b";
             BigInteger ticket = createTicket(url, pk, libraryAddress);
-            String ownerc = PublishTicket.deploy(pk, url, libraryAddress, new BigInteger("20"));
+            String ownerc = PublishTicket.deploy(pk, url, libraryAddress, 0.5f);
             approveSell(url, pk, ownerc, ticket, libraryAddress);
-            buyTicket(pk2, new BigInteger("21"), url, ticket, ownerc);
+            buyTicket(pk2, 0.6f, url, ticket, ownerc);
             destroy(pk, url, ownerc);
-            ownerc = PublishTicket.deploy(pk2, url, libraryAddress, new BigInteger("40"));
+            ownerc = PublishTicket.deploy(pk2, url, libraryAddress, 0.5f);
             approveSell(url, pk2, ownerc, ticket, libraryAddress);
-            buyTicket(pk3, new BigInteger("41"),url, ticket,ownerc);
+            buyTicket(pk3, 1.4f, url, ticket, ownerc);
             destroy(pk2, url, ownerc);
 //            System.out.println(ticketId);
 //            String sellContract = PublishTicket.deploy(pk, url, libraryAddress, new BigInteger("30"));
@@ -55,7 +56,7 @@ public class MainTest {
         manager.destroyContract();
     }
 
-    public static void buyTicket(String pk, BigInteger amount, String url, BigInteger ticketid, String ownerc) throws Exception {
+    public static void buyTicket(String pk, float amount, String url, BigInteger ticketid, String ownerc) throws Exception {
         TicketPaymentManager manager = new TicketPaymentManager(ownerc, url, pk);
         manager.buyTicket(ticketid, amount);
     }
