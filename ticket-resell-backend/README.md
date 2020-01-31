@@ -114,10 +114,11 @@ created.
 
 Returns the list of all tickets.
 
-`GET /tickets?eventId={id}&onSale={true|false}`
+`GET /tickets?ownerId={id}&eventId={id}&onSale={true|false}`
 
 Returns a list of tickets from a specific event that are either on sale or not.
-This endpoint is useful to retrieve the list of tickets that can be purchased for an specific event.
+This endpoint is useful to retrieve the list of tickets that can be purchased for an specific event or the tickets that 
+an user owns.
 
 `PATCH /tickets/{id}`
 
