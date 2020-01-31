@@ -48,7 +48,7 @@
                 <span class="input-group-text">$</span>
               </div>
               <input
-                type="text"
+                type="number"
                 class="form-control"
                 v-model="newEvent.price"
                 aria-label="Amount (to the nearest dollar)"
@@ -77,11 +77,10 @@ import moment from "moment";
 export default class OrganizersTable extends Vue {
   private newEvent: Concert = new Concert();
 
-  mounted() {
-    this.newEvent.organizerId = store.state.loggedOrganizer.id;
-  }
-
   private createEvent(): void {
+    this.newEvent.organizerId = store.state.loggedOrganizer.id;
+    this.newEvent.price = Number(this.newEvent.price);
+    this.newEvent.ntickets = Number(this.newEvent.price);
     Concert.Save(this.newEvent).then(result => {
       if (result.success) {
         alert("Saved the event : " + this.newEvent.name);
