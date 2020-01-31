@@ -44,7 +44,7 @@
             <p>Date : {{ selectedEvent.date | toLocaleDateString }} {{ selectedEvent.date | toLocaleTimeString }}</p>
             <p>Venue : {{ selectedEvent.place }}</p>
             <p>Organizer : {{ selectedEventOrganizer.name }}</p>
-            <div v-if="soldTickets.length > 0 || unsoldTickets.length > 0" class="ticketowners-table">
+            <div v-if="tickets.length > 0" class="ticketowners-table">
               <table class="table table-hover">
                 <thead>
                   <tr>
@@ -54,14 +54,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="ticket in soldTickets" v-bind:key="ticket.id">
+                  <tr v-for="ticket in tickets" v-bind:key="ticket.id">
                     <th scope="row">{{ ticket.id }}</th>
                     <td>{{ getOwnerName(ticket.ownerId) }}</td>
-                    <td>{{ !ticket.onSale }}</td>
-                  </tr>
-                  <tr v-for="ticket in unsoldTickets" v-bind:key="ticket.id">
-                    <th scope="row">{{ ticket.id }}</th>
-                    <td>{{ ticket.ownerId }}</td>                    
                     <td>{{ !ticket.onSale }}</td>
                   </tr>
                 </tbody>
@@ -100,8 +95,7 @@ export default class EventTable extends Vue {
   private concerts: Concert[] = [];
   private selectedEvent: Concert = new Concert();
   private selectedEventOrganizer: User = new User();
-  private soldTickets: Ticket[] = [];
-  private unsoldTickets: Ticket[] = [];
+  private tickets: Ticket[] = [];
   private ticketOwners: User[] = [];
 
   mounted() {
@@ -121,25 +115,15 @@ export default class EventTable extends Vue {
       User.RetrieveById(c.organizerId).then(o => {
         this.selectedEventOrganizer = o;
         $("#eventModal").modal();
-        Ticket.RetrieveSold(eventId)
+        Ticket.Retrieve(eventId)
           .then(t => {
             t.forEach(t => {
               User.RetrieveById(t.ownerId).then(o => this.ticketOwners.push(o));
             });
-            this.soldTickets = t;
+            this.tickets = t;
           })
           .catch(t => {
             alert("Could not fetch sold tickets :( \n" + t);
-          });
-        Ticket.RetrieveUnSold(eventId)
-          .then(t => {
-            t.forEach(t => {
-              User.RetrieveById(t.ownerId).then(o => this.ticketOwners.push(o));
-            });
-            this.unsoldTickets = t;
-          })
-          .catch(t => {
-            alert("Could not fetch unsold tickets :( \n" + t);
           });
       });
     });
