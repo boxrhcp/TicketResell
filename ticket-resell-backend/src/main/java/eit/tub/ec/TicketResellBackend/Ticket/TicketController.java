@@ -35,10 +35,10 @@ public class TicketController {
                     boolean pass = true;
 
                     if (ownerId != null)
-                        pass =  pass && ticket.getOwnerId().equals(ownerId);
+                        pass =  pass && ownerId.equals(ticket.getOwnerId());
 
                     if (eventId != null)
-                        pass = pass && ticket.getEventId().equals(eventId);
+                        pass = pass && eventId.equals(ticket.getEventId());
 
                     if (onSale != null)
                         pass = pass && (ticket.getOnSale() == onSale);
