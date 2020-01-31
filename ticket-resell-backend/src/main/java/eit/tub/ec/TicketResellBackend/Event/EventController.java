@@ -3,6 +3,8 @@ package eit.tub.ec.TicketResellBackend.Event;
 import eit.tub.ec.TicketResellBackend.Contract.Exception.BlockchainTicketApprovalException;
 import eit.tub.ec.TicketResellBackend.Contract.Exception.BlockchainTicketCreationException;
 import eit.tub.ec.TicketResellBackend.Contract.Exception.BlockchainTicketPublishingException;
+import eit.tub.ec.TicketResellBackend.User.User;
+import eit.tub.ec.TicketResellBackend.User.UserService;
 import eit.tub.ec.TicketResellBackend.Utils.APIError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +16,12 @@ import java.util.Optional;
 public class EventController {
     private EventRepository eventRepository;
     private EventService eventService;
+    private UserService userService;
 
-    public EventController(EventRepository eventRepository, EventService eventService) {
+    public EventController(EventRepository eventRepository, EventService eventService, UserService userService) {
         this.eventRepository = eventRepository;
         this.eventService = eventService;
+        this.userService = userService;
     }
 
     @RequestMapping(value = {"/events"}, method = {RequestMethod.GET})
@@ -49,8 +53,16 @@ public class EventController {
                 || event.getOrganizerId() == null) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(new APIError(HttpStatus.BAD_REQUEST, " The fields name, date, place, price, ntickets, or organizerId can't be null"));
+                    .body(new APIError(HttpStatus.BAD_REQUEST, "The fields name, date, place, price, ntickets, or organizerId can't be null."));
         }
+
+        User organizer = userService.findById(event.getOrganizerId());
+        if (!organizer.isOrganizer()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new APIError(HttpStatus.BAD_REQUEST, "Only organizers can create events."));
+        }
+
 
         Event createdEvent;
         ResponseEntity<?> response;
