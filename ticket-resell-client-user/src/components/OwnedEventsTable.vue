@@ -7,20 +7,23 @@
           <th scope="col">Name</th>
           <th scope="col">Venue</th>
           <th scope="col">Date</th>
-          <th scope="col">Available Tickets</th>
-          <th scope="col">Ticket Price</th>
           <th scope="col">Resell</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="concert in concerts" v-bind:key="concert.id">
-          <th scope="row">{{ concert.id }}</th>
-          <td>{{ concert.name }}</td>
-          <td>{{ concert.place }}</td>
-          <td>{{ concert.date | toLocaleDateString }} {{ concert.date | toLocaleTimeString }}</td>
-          <td>{{ concert.availableTickets | showAvailableTickets }}</td>
-          <td>{{ concert.price }}</td>
-          <td><button type="button" class="btn btn-success" v-bind:id="concert.id" @click="resellTicket($event)">Resell</button></td>
+        <tr v-for="ticket in eventTickets" v-bind:key="ticket.ticketId">
+          <th scope="row">{{ ticket.ticketId }}</th>
+          <td>{{ ticket.concert.name }}</td>
+          <td>{{ ticket.concert.place }}</td>
+          <td>{{ ticket.concert.date | toLocaleDateString }} {{ ticket.concert.date | toLocaleTimeString }}</td>
+          <td>
+            <button
+              type="button"
+              class="btn btn-success"
+              v-bind:id="ticket.ticketId"
+              @click="resellTicket($event)"
+            >Resell</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -42,46 +45,56 @@ import { Ticket } from "../models/Ticket";
     },
     toLocaleTimeString(timeStamp: string) {
       return moment(timeStamp).format("LT");
-    },
-    showAvailableTickets(availableTickets: number) {
-      return availableTickets > 0 ? availableTickets : 'Sold out';
     }
   }
 })
 export default class EventTable extends Vue {
-  private concerts: Concert[] = [];
+  private eventTickets: EventTicket[] = [];
 
   mounted() {
-    Concert.Retrieve().then(e => {
-        this.concerts = e;
+    let userId = store.state.loggedUser.id;
+    Ticket.RetrieveByOwner(userId).then(e => {
+      e.forEach(t => {
+        let eventTicket = new EventTicket();
+        eventTicket.ticketId = t.id;
+        Concert.RetrieveById(t.eventId).then(c => {
+          eventTicket.concert = c;
+          this.eventTickets.push(eventTicket);
+        });
+      });
     });
   }
 
-  private resellTicket(event : any) : void {
-    let ticket = new Ticket();
-    ticket.eventId = event.target.id;
-    ticket.ownerId = store.state.loggedUser.id;
-
-    const selectedEvent = this.concerts.filter(e => e.id == event.target.id)[0];
-
-    let confirmBuy = confirm("Are you sure you want to buy " + selectedEvent.name + "?");
-    if(confirmBuy) {
-      Ticket.Retrieve(ticket.eventId).then(t => {
-        const unsoldTicket = t[0];
-        Ticket.Buy(ticket.ownerId, unsoldTicket.id).then(r => {
-          if(r.success === true) {
-            alert('Successfully bought the ticket to ' + selectedEvent.name);
-          }
-        }).catch(r => {
-          alert("bad stuff happned when trying to buy the ticket\n" + r.message);
-        });
+  private resellTicket(event: any): void {
+    const ticketId = event.target.id;
+    const eventTicket = this.eventTickets.filter(
+      e => (e.ticketId = ticketId)
+    )[0];
+    let confirmBuy = confirm(
+      "Are you sure you want put the ticket to " +
+        eventTicket.concert.name +
+        " up for resell ? "
+    );
+    if (confirmBuy) {
+      Ticket.Resell(ticketId).then(result => {
+        if (result.success) {
+          alert("Your ticket has been marked for resell.");
+        } else {
+          alert("Could not resell your ticket 😢\n" + result.message);
+        }
       });
+    } else {
+      alert("Okay. Hope you have fun at the event! 🎉🎉");
     }
   }
+}
+
+class EventTicket {
+  ticketId!: Number;
+  concert!: Concert;
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>

@@ -19,8 +19,16 @@
           <td>{{ concert.place }}</td>
           <td>{{ concert.date | toLocaleDateString }} {{ concert.date | toLocaleTimeString }}</td>
           <td>{{ concert.availableTickets | showAvailableTickets }}</td>
-          <td>{{ concert.price }}</td>
-          <td><button type="button" :disabled="concert.availableTickets === 0" class="btn btn-success" v-bind:id="concert.id" @click="buyTicket($event)">Buy</button></td>
+          <td>€ {{ concert.price }}</td>
+          <td>
+            <button
+              type="button"
+              :disabled="concert.availableTickets === 0"
+              class="btn btn-success"
+              v-bind:id="concert.id"
+              @click="buyTicket($event)"
+            >Buy</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -44,7 +52,7 @@ import { Ticket } from "../models/Ticket";
       return moment(timeStamp).format("LT");
     },
     showAvailableTickets(availableTickets: number) {
-      return availableTickets > 0 ? availableTickets : 'Sold out';
+      return availableTickets > 0 ? availableTickets : "Sold out";
     }
   }
 })
@@ -53,28 +61,34 @@ export default class EventTable extends Vue {
 
   mounted() {
     Concert.Retrieve().then(e => {
-        this.concerts = e;
+      this.concerts = e;
     });
   }
 
-  private buyTicket(event : any) : void {
+  private buyTicket(event: any): void {
     let ticket = new Ticket();
     ticket.eventId = event.target.id;
     ticket.ownerId = store.state.loggedUser.id;
 
     const selectedEvent = this.concerts.filter(e => e.id == event.target.id)[0];
 
-    let confirmBuy = confirm("Are you sure you want to buy " + selectedEvent.name + "?");
-    if(confirmBuy) {
-      Ticket.Retrieve(ticket.eventId).then(t => {
+    let confirmBuy = confirm(
+      "Are you sure you want to buy " + selectedEvent.name + "?"
+    );
+    if (confirmBuy) {
+      Ticket.RetrieveByEvent(ticket.eventId).then(t => {
         const unsoldTicket = t.filter(u => u.onSale === true)[0];
-        Ticket.Buy(ticket.ownerId, unsoldTicket.id).then(r => {
-          if(r.success === true) {
-            alert('Successfully bought the ticket to ' + selectedEvent.name);
-          }
-        }).catch(r => {
-          alert("bad stuff happned when trying to buy the ticket\n" + r.message);
-        });
+        Ticket.Buy(ticket.ownerId, unsoldTicket.id)
+          .then(r => {
+            if (r.success === true) {
+              alert("Successfully bought the ticket to " + selectedEvent.name);
+            }
+          })
+          .catch(r => {
+            alert(
+              "bad stuff happned when trying to buy the ticket\n" + r.message
+            );
+          });
       });
     }
   }
@@ -83,5 +97,4 @@ export default class EventTable extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>
