@@ -59,4 +59,32 @@ export class Ticket {
         });
     }
 
+    public static Resell(ticketId : Number) : Promise<ApiResponse> {
+        return new Promise(function(resolve, reject) {
+            let apiResponse = new ApiResponse();
+            const requestUrl = encodeURI(process.env.VUE_APP_SERVER_URL + '/tickets/' + ticketId);
+            axios.patch(requestUrl, {
+                onSale: true
+            }).then(result => {
+                if(result.status === 200) {
+                    apiResponse.success = true;
+                    resolve(apiResponse);
+                }
+                else {
+                    apiResponse.success = false;
+                    apiResponse.message = result.statusText;
+                    reject(apiResponse);
+                }
+            }).catch(error => {
+                apiResponse.success = false;
+                if(error.response) {
+                    apiResponse.message = error.response.data.message;
+                }
+                else {
+                    apiResponse.message = error.message;
+                }
+            });
+        });
+    }
+
 }

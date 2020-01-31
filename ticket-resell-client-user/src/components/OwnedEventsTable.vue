@@ -9,7 +9,7 @@
           <th scope="col">Date</th>
           <th scope="col">Available Tickets</th>
           <th scope="col">Ticket Price</th>
-          <th scope="col">Buy</th>
+          <th scope="col">Resell</th>
         </tr>
       </thead>
       <tbody>
@@ -20,7 +20,7 @@
           <td>{{ concert.date | toLocaleDateString }} {{ concert.date | toLocaleTimeString }}</td>
           <td>{{ concert.availableTickets | showAvailableTickets }}</td>
           <td>{{ concert.price }}</td>
-          <td><button type="button" :disabled="concert.availableTickets === 0" class="btn btn-success" v-bind:id="concert.id" @click="buyTicket($event)">Buy</button></td>
+          <td><button type="button" class="btn btn-success" v-bind:id="concert.id" @click="resellTicket($event)">Resell</button></td>
         </tr>
       </tbody>
     </table>
@@ -57,7 +57,7 @@ export default class EventTable extends Vue {
     });
   }
 
-  private buyTicket(event : any) : void {
+  private resellTicket(event : any) : void {
     let ticket = new Ticket();
     ticket.eventId = event.target.id;
     ticket.ownerId = store.state.loggedUser.id;
