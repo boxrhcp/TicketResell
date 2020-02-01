@@ -17,12 +17,22 @@
           <td>{{ ticket.concert.place }}</td>
           <td>{{ ticket.concert.date | toLocaleDateString }} {{ ticket.concert.date | toLocaleTimeString }}</td>
           <td>
-            <button
-              type="button"
-              class="btn btn-success"
-              v-bind:id="ticket.ticketId"
-              @click="resellTicket($event)"
-            >Resell</button>
+            <div class="form-group">
+              <div class="input-group my-1">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">ETH</span>
+                </div>
+                <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" v-model="ticket.price" />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    v-bind:id="ticket.ticketId"
+                    @click="resellTicket($event)"
+                  >Resell</button>
+                </div>
+              </div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -58,6 +68,7 @@ export default class EventTable extends Vue {
 
   private updateTicketByOwners() {
     Ticket.RetrieveByOwner(this.userId).then(e => {
+      this.eventTickets = [];
       e.forEach(t => {
         let eventTicket = new EventTicket();
         eventTicket.ticketId = t.id;
@@ -77,10 +88,10 @@ export default class EventTable extends Vue {
     let confirmBuy = confirm(
       "Are you sure you want put the ticket to " +
         eventTicket.concert.name +
-        " up for resell ? "
+        " up for resell for the price of " + eventTicket.price + "ETH ? "
     );
     if (confirmBuy) {
-      Ticket.Resell(ticketId).then(result => {
+      Ticket.Resell(ticketId, eventTicket.price).then(result => {
         if (result.success) {
           alert("Your ticket has been marked for resell.");
         } else {
@@ -95,6 +106,7 @@ export default class EventTable extends Vue {
 
 class EventTicket {
   ticketId!: Number;
+  price!: Number;
   concert!: Concert;
 }
 </script>
