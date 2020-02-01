@@ -16,7 +16,7 @@ export class Concert {
             let apiResponse : ApiResponse = new ApiResponse();       
             axios.post(process.env.VUE_APP_SERVER_URL + '/events', event).then(result => {
                              
-                if(result.status === 200) {
+                if(result.status === 201) {
                     apiResponse.success = true;
                     apiResponse.message = result.data;
                     resolve(apiResponse);
