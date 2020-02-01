@@ -51,8 +51,8 @@ export class Ticket {
             let apiResponse = new ApiResponse();
             const requestUrl = encodeURI(process.env.VUE_APP_SERVER_URL + '/transactions');
             axios.post(requestUrl, {
-                buyerId: userId,
-                tickedId: ticketId 
+                buyerId: Number(userId),
+                tickedId: Number(ticketId) 
             }).then(result => {
                 if(result.status === 201) {
                     apiResponse.success = true;
