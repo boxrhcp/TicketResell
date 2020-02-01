@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 import store from "../store";
 import moment from "moment";
 import { Concert } from "../models/Concert";
@@ -50,10 +50,14 @@ import { Ticket } from "../models/Ticket";
 })
 export default class EventTable extends Vue {
   private eventTickets: EventTicket[] = [];
+  @Prop() private userId!: Number; // = store.state.loggedUser.id;
 
   mounted() {
-    let userId = store.state.loggedUser.id;
-    Ticket.RetrieveByOwner(userId).then(e => {
+    this.updateTicketByOwners();
+  }
+
+  private updateTicketByOwners() {
+    Ticket.RetrieveByOwner(this.userId).then(e => {
       e.forEach(t => {
         let eventTicket = new EventTicket();
         eventTicket.ticketId = t.id;
