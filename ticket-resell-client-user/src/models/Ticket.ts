@@ -76,12 +76,13 @@ export class Ticket {
         });
     }
 
-    public static Resell(ticketId : Number) : Promise<ApiResponse> {
+    public static Resell(ticketId : Number, ticketPrice : Number) : Promise<ApiResponse> {
         return new Promise(function(resolve, reject) {
             let apiResponse = new ApiResponse();
             const requestUrl = encodeURI(process.env.VUE_APP_SERVER_URL + '/tickets/' + ticketId);
             axios.patch(requestUrl, {
-                onSale: true
+                onSale: true,
+                price: Number(ticketPrice)
             }).then(result => {
                 if(result.status === 200) {
                     apiResponse.success = true;
