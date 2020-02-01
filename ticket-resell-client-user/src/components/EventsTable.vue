@@ -19,7 +19,7 @@
           <td>{{ concert.place }}</td>
           <td>{{ concert.date | toLocaleDateString }} {{ concert.date | toLocaleTimeString }}</td>
           <td>{{ concert.availableTickets | showAvailableTickets }}</td>
-          <td>€ {{ concert.price }}</td>
+          <td>{{ concert.price }} ETH</td>
           <td>
             <button
               type="button"

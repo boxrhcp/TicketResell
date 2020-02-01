@@ -45,7 +45,7 @@
           <div class="form-group">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <span class="input-group-text">€</span>
+                <span class="input-group-text">ETH</span>
               </div>
               <input
                 type="number"
@@ -53,9 +53,6 @@
                 v-model="newEvent.price"
                 aria-label="Amount (to the nearest dollar)"
               />
-              <div class="input-group-append">
-                <span class="input-group-text">.00</span>
-              </div>
             </div>
           </div>
         </div>
