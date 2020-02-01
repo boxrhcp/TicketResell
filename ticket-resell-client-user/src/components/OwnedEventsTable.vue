@@ -17,7 +17,8 @@
           <td>{{ ticket.concert.place }}</td>
           <td>{{ ticket.concert.date | toLocaleDateString }} {{ ticket.concert.date | toLocaleTimeString }}</td>
           <td>
-            <div class="form-group">
+            <div v-if="ticket.onSale === false">
+              <div class="form-group">
               <div class="input-group my-1">
                 <div class="input-group-prepend">
                   <span class="input-group-text">ETH</span>
@@ -32,6 +33,10 @@
                   >Resell</button>
                 </div>
               </div>
+            </div>
+            </div>
+            <div v-else>
+              <p class="text-danger">Ticket is already marked for resale</p>
             </div>
           </td>
         </tr>
@@ -72,6 +77,7 @@ export default class EventTable extends Vue {
       e.forEach(t => {
         let eventTicket = new EventTicket();
         eventTicket.ticketId = t.id;
+        eventTicket.onSale = t.onSale;
         Concert.RetrieveById(t.eventId).then(c => {
           eventTicket.concert = c;
           this.eventTickets.push(eventTicket);
@@ -107,6 +113,7 @@ export default class EventTable extends Vue {
 class EventTicket {
   ticketId!: Number;
   price!: Number;
+  onSale!: Boolean;
   concert!: Concert;
 }
 </script>
