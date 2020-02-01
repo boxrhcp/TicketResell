@@ -11,7 +11,9 @@ export default new Vuex.Store({
   },
   mutations: {
     setLoggedUserAction(state, payload) {
-      User.RetrieveById(Number(payload)).then(u => state.loggedUser = u);
+      User.RetrieveById(Number(payload)).then(u => {
+        state.loggedUser = u;
+      });
       state.isLoggedIn = true;
     }
   },

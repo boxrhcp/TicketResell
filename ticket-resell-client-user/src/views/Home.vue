@@ -17,7 +17,9 @@
           <EventTable />
         </div>
         <div class="tab-pane fade" id="profile">
-          <OwnedEventsTable />
+          <div v-if="this.$store.state.loggedUser.id !== undefined">
+            <OwnedEventsTable :userId="this.$store.state.loggedUser.id" />
+          </div>
         </div>
       </div>
     </div>
