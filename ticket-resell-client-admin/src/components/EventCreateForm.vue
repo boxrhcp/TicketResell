@@ -77,7 +77,7 @@ export default class OrganizersTable extends Vue {
   private createEvent(): void {
     this.newEvent.organizerId = store.state.loggedOrganizer.id;
     this.newEvent.price = Number(this.newEvent.price);
-    this.newEvent.ntickets = Number(this.newEvent.price);
+    this.newEvent.ntickets = Number(this.newEvent.ntickets);
     Concert.Save(this.newEvent).then(result => {
       if (result.success) {
         alert("Saved the event : " + this.newEvent.name);
