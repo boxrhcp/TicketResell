@@ -5,6 +5,7 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.Contract;
 import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -25,7 +26,7 @@ public class PublishTicketLibrary {
     public static String deployLibrary(String url, String ownerPK) throws Exception {
         Web3j web3j = Web3j.build(new HttpService(url));
         Credentials credentials = Credentials.create(ownerPK);
-        PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(web3j, 5000l, 5);
+        PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(web3j, 15000l, 10);
 
         TransactionManager txManager = new FastRawTransactionManager(web3j, credentials, processor);
         //deploy new contract
@@ -34,20 +35,17 @@ public class PublishTicketLibrary {
                     @Override
                     public BigInteger getGasPrice(String contractFunc) {
                         switch (contractFunc) {
-                            case Tickets.FUNC_CREATETICKET:
-                                return BigInteger.valueOf(22_000_000_000L);
                             default:
-                                return BigInteger.valueOf(30_000_000_000L);
+
+                                return Contract.GAS_PRICE;
                         }
                     }
 
                     @Override
                     public BigInteger getGasLimit(String contractFunc) {
                         switch (contractFunc) {
-                            case Tickets.FUNC_CREATETICKET:
-                                return BigInteger.valueOf(4_300_000);
                             default:
-                                return BigInteger.valueOf(4_800_000);
+                                return Contract.GAS_LIMIT;
                         }
                     }
                 });

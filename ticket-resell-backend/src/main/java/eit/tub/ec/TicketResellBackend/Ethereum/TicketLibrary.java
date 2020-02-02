@@ -4,6 +4,7 @@ import eit.tub.ec.TicketResellBackend.Ethereum.Contracts.Tickets;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.Contract;
 import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -27,7 +28,7 @@ public class TicketLibrary {
     public TicketLibrary(String ticketLibraryAddress, String url, String userPK) {
         Web3j web3j = Web3j.build(new HttpService(url));
         PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(
-                web3j, 5000L, 5);
+                web3j, 15000L, 10);
         Credentials credentials = Credentials.create(userPK);
         account = credentials.getAddress();
         TransactionManager txManager = new FastRawTransactionManager(web3j, credentials, processor);
@@ -36,24 +37,16 @@ public class TicketLibrary {
                     @Override
                     public BigInteger getGasPrice(String contractFunc) {
                         switch (contractFunc) {
-                            case Tickets.FUNC_APPROVE:
-                                return BigInteger.valueOf(22_000_000_000L);
-                            case Tickets.FUNC_CREATETICKET:
-                                return BigInteger.valueOf(44_000_000_000L);
                             default:
-                                return BigInteger.valueOf(30_000_000_000L);
+                                return Contract.GAS_PRICE;
                         }
                     }
 
                     @Override
                     public BigInteger getGasLimit(String contractFunc) {
                         switch (contractFunc) {
-                            case Tickets.FUNC_APPROVE:
-                                return BigInteger.valueOf(4_300_000);
-                            case Tickets.FUNC_CREATETICKET:
-                                return BigInteger.valueOf(5_300_000);
                             default:
-                                return BigInteger.valueOf(4_800_000);
+                                return Contract.GAS_LIMIT;
                         }
                     }
                 });

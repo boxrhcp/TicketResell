@@ -4,6 +4,7 @@ import eit.tub.ec.TicketResellBackend.Ethereum.Contracts.OwnerContract;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.Contract;
 import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -27,8 +28,8 @@ public class TicketPaymentManager {
      */
     public TicketPaymentManager(String ownerContractAddress, String url, String buyerPK) {
         Web3j web3j = Web3j.build(new HttpService(url));
-        PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(web3j, 5000l
-                , 5);
+        PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(web3j, 15000l
+                , 10);
         Credentials credentials = Credentials.create(buyerPK);
         TransactionManager txManager = new FastRawTransactionManager(web3j, credentials, processor);
         conn = OwnerContract.load(ownerContractAddress, web3j, txManager,
@@ -36,24 +37,16 @@ public class TicketPaymentManager {
                     @Override
                     public BigInteger getGasPrice(String contractFunc) {
                         switch (contractFunc) {
-                            case OwnerContract.FUNC_BUYTICKET:
-                                return BigInteger.valueOf(22_000_000_000L);
-                            case OwnerContract.FUNC_SETCURRENTPRICE:
-                                return BigInteger.valueOf(44_000_000_000L);
                             default:
-                                return BigInteger.valueOf(30_000_000_000L);
+                                return Contract.GAS_PRICE;
                         }
                     }
 
                     @Override
                     public BigInteger getGasLimit(String contractFunc) {
                         switch (contractFunc) {
-                            case OwnerContract.FUNC_BUYTICKET:
-                                return BigInteger.valueOf(4_300_000);
-                            case OwnerContract.FUNC_SETCURRENTPRICE:
-                                return BigInteger.valueOf(5_300_000);
                             default:
-                                return BigInteger.valueOf(4_800_000);
+                                return Contract.GAS_LIMIT;
                         }
                     }
                 });

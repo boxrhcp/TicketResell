@@ -26,7 +26,8 @@ public class DeployLibraryContract {
         System.out.println("Deploying Ticket Library Contract to Ethereum ...");
 
         try {
-            deployLibrary(BLOCKCHAIN_URL, ADMIN_PK);
+            String address = PublishTicketLibrary.deployLibrary(BLOCKCHAIN_URL, ADMIN_PK);
+            System.out.println("TicketLibrary Contract Address: " + address);
 
         } catch (IOException ex) {
             throw new RuntimeException("Error whilst sending json-rpc requests", ex);
@@ -35,40 +36,5 @@ public class DeployLibraryContract {
         }
     }
 
-
-    public static String deployLibrary(String url, String ownerPK) throws Exception {
-        Web3j web3j = Web3j.build(new HttpService(url));
-        Credentials credentials = Credentials.create(ownerPK);
-        PollingTransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(web3j, 5000l, 5);
-
-        TransactionManager txManager = new FastRawTransactionManager(web3j, credentials, processor);
-        // Deploy new contract
-        RemoteCall<Tickets> request = Tickets.deploy(web3j, txManager,
-                new DefaultGasProvider() {
-                    @Override
-                    public BigInteger getGasPrice(String contractFunc) {
-                        switch (contractFunc) {
-                            case Tickets.FUNC_CREATETICKET:
-                                return BigInteger.valueOf(22_000_000_000L);
-                            default:
-                                return BigInteger.valueOf(30_000_000_000L);
-                        }
-                    }
-
-                    @Override
-                    public BigInteger getGasLimit(String contractFunc) {
-                        switch (contractFunc) {
-                            case Tickets.FUNC_CREATETICKET:
-                                return BigInteger.valueOf(4_300_000);
-                            default:
-                                return BigInteger.valueOf(4_800_000);
-                        }
-                    }
-                });
-        Tickets token = request.send();
-        // Load existing contract by address
-        System.out.println("TicketLibrary Contract Address: " + token.getContractAddress());
-        return token.getContractAddress();
-    }
 }
 
